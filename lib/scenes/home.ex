@@ -8,14 +8,13 @@ defmodule LayoutOMatic.Scene.Home do
   # import Scenic.Components
   @graph Graph.build()
 
-  def init(_, _opts) do
-    list =
-      Enum.map(Layout.grid(5), fn t ->
-        group_spec(&(&1), translate: t)
-      end)
+    @viewport :layout_o_matic
+          |> Application.get_env(:viewport)
+          |> Map.get(:size)
 
+  def init(_, _opts) do
     graph =
-      add_specs_to_graph(@graph, list)
+      add_specs_to_graph(@graph, Layout.grid(5))
 
     {:ok, graph, push: graph}
   end
