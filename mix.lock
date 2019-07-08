@@ -1,4 +1,5 @@
 %{
+  "dnssd": {:git, "https://github.com/benoitc/dnssd_erlang", "9b2fdb7ff9618102d82f04e4c68ce191c9aa15ba", []},
   "elixir_make": {:hex, :elixir_make, "0.5.2", "96a28c79f5b8d34879cd95ebc04d2a0d678cfbbd3e74c43cb63a76adf0ee8054", [:mix], [], "hexpm"},
   "font_metrics": {:hex, :font_metrics, "0.3.1", "025ff9957040eb4d6430c306a4445bad5d9f43ec24448c1647df7cb63b5dd88c", [:mix], [{:msgpax, "~> 2.2", [hex: :msgpax, repo: "hexpm", optional: false]}], "hexpm"},
   "msgpax": {:hex, :msgpax, "2.2.3", "02be0be1b440a12d7e6f6c45662463d53d01a30b5bd4ab806276453b455f820a", [:mix], [{:plug, "~> 1.0", [hex: :plug, repo: "hexpm", optional: true]}], "hexpm"},
