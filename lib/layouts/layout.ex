@@ -1,37 +1,43 @@
 defmodule Scenic.Layouts.Layout do
+  alias Scenic.Graph
+
   import Scenic.Primitives
 
   @viewport :layout_o_matic
           |> Application.get_env(:viewport)
           |> Map.get(:size)
 
-  def grid(number_of_columns, {starting_x, starting_y} \\ @viewport, opts \\ nil) do
-    size = round(starting_x / number_of_columns)
+  def grid(number_of_columns, {max_x, max_y} \\ @viewport, opts \\ nil) do
+    col_size = round(max_x / number_of_columns)
 
-    #calculates max x for grid space
-    list_of_x =
-      Enum.map(number_of_columns..1, fn cols ->
-        x = starting_x - size * cols
-        case opts[:draw] do
-          true ->
-            rect_spec({x, starting_y}, stroke: {0.25, :white}, scissor: {x, starting_y})
+    Enum.map_reduce(number_of_columns..1, opts[:group_ids], fn cols, acc ->
+      x = (max_x - col_size) * cols
+      id = Atom.to_string(hd(acc))
 
-          _ ->
-            rect_spec({x, starting_y}, scissor: {x, starting_y})
-        end
-      end)
+      {group_spec(
+        rect_spec(
+          {x, max_y},
+          stroke: {1, :white},
+          scissor: {x, max_y},
+          id: String.to_atom(id)),
+        id: String.to_atom(id <> "_" <> "group")), tl(acc)}
+    end)
+    |> Tuple.to_list()
+    |> Enum.map(fn rect ->
+      rect
+    end)
   end
 
-  # def draw_guides(list_of_x, starting_y) do
-  #   Enum.map(list_of_x, fn x ->
-  #     line_spec({{x, 0}, {x, starting_y}}, stroke: {0.25, :white})
+  # def auto_layout(graph, group, _list_of_specs) do
+  #   [%{data: data}] = Graph.get(graph, group)
+  #   Enum.map(data, fn id ->
+  #     Graph.get(graph, id)
   #   end)
   # end
 
   # ===========================FIX THIS==========================
-  # def columns(num_of_cols), do: :ok
+  # Takes a list of components/primitives, size of the container, options: starting x, y
 
-  # # Takes a list of components/primitives, size of the container, options: starting x, y
   # def build_container(
   #       %{
   #         data: {container_sizex, container_sizey},

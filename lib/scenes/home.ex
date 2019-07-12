@@ -6,17 +6,19 @@ defmodule LayoutOMatic.Scene.Home do
 
   import Scenic.Primitives
 
-  @graph Graph.build()
-
   @viewport :layout_o_matic
             |> Application.get_env(:viewport)
             |> Map.get(:size)
 
-  def init(_, _opts) do
+  @graph Graph.build()
+         |> add_specs_to_graph(
+          Layout.grid(2, @viewport, [group_ids: [:left, :right]]),
+          t: {0, 0},
+          id: :root_grid)
 
-    graph =
-      add_specs_to_graph(@graph, Layout.grid(5, @viewport, [draw: true]))
-
-    {:ok, graph, push: graph}
+  def init(_, opts) do
+    IO.inspect(@graph)
+    # Layout.auto_layout(@graph, :root_grid, [])
+    {:ok, opts, push: @graph}
   end
 end
