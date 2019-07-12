@@ -24,8 +24,8 @@ defmodule LayoutOMatic.MixProject do
   defp deps do
     [
       {:scenic, "~> 0.10"},
-      {:scenic_driver_glfw, "~> 0.10", targets: :host},
-      {:dnssd, git: "https://github.com/benoitc/dnssd_erlang", manager: :rebar}
+      {:scenic_driver_glfw, "~> 0.10"},
+      {:dnssd, git: "https://github.com/benoitc/dnssd_erlang", manager: :rebar},
     ]
   end
 end
