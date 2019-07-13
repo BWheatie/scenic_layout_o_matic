@@ -3,23 +3,25 @@ defmodule Scenic.Layouts.Layout do
 
   import Scenic.Primitives
 
-  @viewport :layout_o_matic
-          |> Application.get_env(:viewport)
-          |> Map.get(:size)
-
-  def grid(number_of_columns, {max_x, max_y} \\ @viewport, opts \\ nil) do
+  def grid(number_of_columns, {max_x, max_y}, opts \\ nil) do
     col_size = round(max_x / number_of_columns)
 
-    Enum.map_reduce(number_of_columns..1, opts[:group_ids], fn cols, acc ->
+    Enum.map_reduce(1..number_of_columns, opts[:group_ids], fn cols, acc ->
       x = (max_x - col_size) * cols
       id = Atom.to_string(hd(acc))
 
       {group_spec(
-        rect_spec(
+        [rect_spec(
           {x, max_y},
+          hidden: opts[:no_draw] || true,
           stroke: {1, :white},
           scissor: {x, max_y},
           id: String.to_atom(id)),
+        text_spec(
+          ":"<>id,
+          hidden: opts[:no_draw] || true,
+          fill: :white,
+          t: {x - 300, 100})],
         id: String.to_atom(id <> "_" <> "group")), tl(acc)}
     end)
     |> Tuple.to_list()
@@ -28,12 +30,12 @@ defmodule Scenic.Layouts.Layout do
     end)
   end
 
-  # def auto_layout(graph, group, _list_of_specs) do
-  #   [%{data: data}] = Graph.get(graph, group)
-  #   Enum.map(data, fn id ->
-  #     Graph.get(graph, id)
-  #   end)
-  # end
+  def auto_layout(graph, group, _list_of_specs) do
+    [%{data: data}] = Graph.get(graph, group)
+    Enum.map(data, fn id ->
+      Graph.get(graph, id)
+    end)
+  end
 
   # ===========================FIX THIS==========================
   # Takes a list of components/primitives, size of the container, options: starting x, y

@@ -18,7 +18,6 @@ defmodule LayoutOMatic.Scene.Home do
 
   def init(_, opts) do
     IO.inspect(@graph)
-    # Layout.auto_layout(@graph, :root_grid, [])
     {:ok, opts, push: @graph}
   end
 end
