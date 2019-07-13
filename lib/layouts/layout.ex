@@ -3,7 +3,7 @@ defmodule Scenic.Layouts.Layout do
 
   import Scenic.Primitives
 
-  def grid(number_of_columns, {max_x, max_y}, opts \\ nil) do
+  def grid(number_of_columns, {max_x, max_y}, opts \\ []) do
     col_size = round(max_x / number_of_columns)
 
     Enum.map_reduce(1..number_of_columns, opts[:group_ids], fn cols, acc ->
@@ -13,13 +13,13 @@ defmodule Scenic.Layouts.Layout do
       {group_spec(
         [rect_spec(
           {x, max_y},
-          hidden: opts[:no_draw] || true,
+          hidden: Keyword.get(opts, :no_draw, true),
           stroke: {1, :white},
           scissor: {x, max_y},
           id: String.to_atom(id)),
         text_spec(
           ":"<>id,
-          hidden: opts[:no_draw] || true,
+          hidden: Keyword.get(opts, :no_draw, true),
           fill: :white,
           t: {x - 300, 100})],
         id: String.to_atom(id <> "_" <> "group")), tl(acc)}
