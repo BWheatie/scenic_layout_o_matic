@@ -1,6 +1,6 @@
 This library will help when wanting some web-like layouts for Scenic framework. Currently it will create something remenicent of a grid by dividing the viewport into equal columns. Once these columns are created they include groups which can be modified to then add new primitives/components to. Currently the grid is in development with auto-layouts, including component resizing, and custom column sizes. 
 
-##Example
+## Example
 ```elixir
 defmodule LayoutOMatic.Scene.Home do
   use Scenic.Scene
@@ -16,7 +16,7 @@ defmodule LayoutOMatic.Scene.Home do
 
   @graph Graph.build()
          |> add_specs_to_graph(
-          Layout.grid(2, @viewport, [group_ids: [:left, :right]]),
+          Layout.grid(2, @viewport, [no_draw: false, group_ids: [:left, :right]]),
           t: {0, 0},
           id: :root_grid)
 
