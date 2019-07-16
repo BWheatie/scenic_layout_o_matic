@@ -4,14 +4,13 @@ defmodule DeviceDiscovery do
   def list_devices(device_type \\ @dns_device_type) do
     results = discover_devices(device_type)
 
-    devices =
-      Enum.map(results, fn result ->
-        result
-        |> elem(0)
-        |> String.trim("\n")
-        |> String.split("@")
-        |> List.last()
-      end)
+    Enum.map(results, fn result ->
+      result
+      |> elem(0)
+      |> String.trim("\n")
+      |> String.split("@")
+      |> List.last()
+    end)
   end
 
   defp discover_devices(device_type) do
