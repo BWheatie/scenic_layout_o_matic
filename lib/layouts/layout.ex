@@ -3,51 +3,68 @@ defmodule Scenic.Layouts.Layout do
 
   import Scenic.Primitives
 
-  defmodule GridEqual do
-    @opts [:draw_grid]
+  defmodule Grid do
     @enforce_keys [:number_of_columns, :max_xy, :grid_ids]
-    defstruct [:number_of_columns, :max_xy, :grid_ids, :column_size, opts: @opts]
+    defstruct [
+      :number_of_columns,
+      :percent_of_columns,
+      :max_xy,
+      :grid_ids,
+      :column_size,
+      opts: [:draw]
+    ]
   end
 
-  defmodule GridPerctage do
-    @opts [:draw_grid]
-    @enforce_keys [:percent_of_columns, :max_xy, :grid_ids]
-    defstruct [:percent_of_columns, :max_xy, :grid_ids, :column_size, opts: @opts]
+  # Takes integer to create equally sized cols
+  def grid(%Grid{number_of_columns: num} = grid) when not is_nil(num) do
+    {max_x, _} = Map.get(grid, :max_xy)
+
+    Map.put(
+      grid,
+      :column_size,
+      div(max_x, Map.get(grid, :number_of_columns))
+    )
+    |> build_grid()
   end
 
-  #Takes integer to create equally sized cols
-  def grid(GridEqual = grid) do
-    with grid_w_size <- Map.put(grid, :column_size, div(Map.get(grid, :number_of_columns), max_x))
-        {max_x, max_y} <- Map.get(grid_w_size, :max_xy)
-        specs <- build_grid(grid) do
-      {:ok, specs}
-    end
-  end
+  def grid(%Grid{percent_of_columns: percentages} = grid) when not is_nil(percentages) do
+    {max_x, _} = Map.get(grid, :max_xy)
 
-  #Takes list of percentages for cols
-  # def grid(GridPerctage) do
-  #   Enum.map(percentages, fn percent ->
-  #     percent
-  #     |> div(100) * max_x
-  #     |> build_grid(number_of_cols, max_y)
-  #   end)
-  # end
+    sizes =
+      Enum.map(percentages, fn percent ->
+        div(percent, 100) * max_x
+      end)
+
+    Map.put(
+      grid,
+      :column_size,
+      sizes
+    )
+    |> build_grid()
+  end
 
   def build_grid(grid) do
-    Enum.map_reduce(1..Map.get(grid, :number_of_columns), Map.get(grid, grid_ids), fn cols, acc ->
+    IO.inspect(grid)
+
+    Enum.map(Map.get(grid, :grid_ids), fn id ->
       {max_x, max_y} = Map.get(grid, :max_xy)
-      x = (max_x - col_size) * cols
+      x = max_x - Map.get(grid, :column_size)
       id = Atom.to_string(hd(acc))
 
       {group_spec(
-        rect_spec(
-          {x, max_y},
-          hidden: opts[]
-          stroke: {1, :white},
-          scissor: {x, max_y},
-          id: String.to_atom(id)),
-        id: String.to_atom(id <> "_" <> "group")),
-        tl(acc)}
+         [
+           rect_spec({x, max_y},
+             stroke: {1, :white},
+             scissor: {x, max_y},
+             id: String.to_atom(id)
+           ),
+           text_spec(":" <> id,
+             fill: :white,
+             t: {x - 300, 100}
+           )
+         ],
+         id: String.to_atom(id <> "_" <> "group")
+       ), tl(acc)}
     end)
     |> Tuple.to_list()
     |> Enum.map(fn rect ->
@@ -55,17 +72,9 @@ defmodule Scenic.Layouts.Layout do
     end)
   end
 
-  def draw_grid({x, max_y}) do
-    [
-    text_spec(
-      ":"<>id,
-      fill: :white,
-      t: {x - 300, 100})]
-  end
-
-
   def auto_layout(graph, group, _list_of_specs) do
     [%{data: data}] = Graph.get(graph, group)
+
     Enum.map(data, fn id ->
       Graph.get(graph, id)
     end)
@@ -181,6 +190,4 @@ defmodule Scenic.Layouts.Layout do
   #     ) do
   #   startingx + component_height <= container_edgex
   # end
-
-
 end

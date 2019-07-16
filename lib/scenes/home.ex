@@ -3,6 +3,7 @@ defmodule LayoutOMatic.Scene.Home do
 
   alias Scenic.Graph
   alias Scenic.Layouts.Layout
+  alias Scenic.Layouts.Layout.Grid
 
   import Scenic.Primitives
 
@@ -10,13 +11,12 @@ defmodule LayoutOMatic.Scene.Home do
             |> Application.get_env(:viewport)
             |> Map.get(:size)
 
-  @grid %GridEqual{number_of_columns: 3, max_xy: @viewport, grid_ids: [:left, :right, :center]}
+  @grid %Grid{number_of_columns: 2, max_xy: @viewport, grid_ids: [:left, :right]}
 
   @graph Graph.build()
-         |> add_specs_to_graph(
-          Layout.grid(@grid),
-          t: {0, 0},
-          id: :root_grid)
+         |> add_specs_to_graph(Layout.grid(@grid),
+           id: :root_grid
+         )
 
   def init(_, opts) do
     {:ok, opts, push: @graph}
