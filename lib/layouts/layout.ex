@@ -3,14 +3,21 @@ defmodule Scenic.Layouts.Layout do
 
   import Scenic.Primitives
 
+  defmodule Error do
+    @moduledoc false
+    defexception message: nil, data: nil
+  end
+
   defmodule Grid do
-    @enforce_keys [:number_of_columns, :max_xy, :grid_ids]
+    @enforce_keys [:max_xy, :grid_ids]
     defstruct [
       :number_of_columns,
       :percent_of_columns,
       :max_xy,
+      :starting_xy,
       :grid_ids,
       :column_size,
+      :xs_and_ids,
       opts: [:draw]
     ]
   end
@@ -27,48 +34,61 @@ defmodule Scenic.Layouts.Layout do
     |> build_grid()
   end
 
-  def grid(%Grid{percent_of_columns: percentages} = grid) when not is_nil(percentages) do
-    {max_x, _} = Map.get(grid, :max_xy)
+  def grid(%Grid{percent_of_columns: percentages} = grid) when not is_nil(percentages) and is_list(percentages) do
+    case Enum.sum(percentages) do
+      100 ->
+        {max_x, _} = Map.get(grid, :max_xy)
 
-    sizes =
-      Enum.map(percentages, fn percent ->
-        div(percent, 100) * max_x
+        sizes =
+          Enum.map(percentages, fn percent ->
+            trunc((percent / 100) * max_x)
+          end)
+
+        Map.put(
+          grid,
+          :column_size,
+          sizes
+        )
+        |> get_x_coordinates()
+
+      _ ->
+        raise Error, message: "Percentages must equal 100", data: percentages
+    end
+  end
+
+  def get_x_coordinates(grid) do
+    Map.put(grid, :xs_and_ids,
+      Enum.map_reduce(Map.get(grid, :column_size), [], fn col, acc ->
+        {starting_x, _} = Map.get(grid, :starting_xy)
+        case acc do
+          [] ->
+            {starting_x + col, starting_x + col}
+
+          _ ->
+            {acc + col, acc + col}
+        end
       end)
-
-    Map.put(
-      grid,
-      :column_size,
-      sizes
-    )
+      |> Tuple.to_list()
+      |> hd()
+      |> Enum.zip(Map.get(grid, :grid_ids)))
     |> build_grid()
   end
 
   def build_grid(grid) do
-    IO.inspect(grid)
+    {_, max_y} = Map.get(grid, :max_xy)
 
-    Enum.map(Map.get(grid, :grid_ids), fn id ->
-      {max_x, max_y} = Map.get(grid, :max_xy)
-      x = max_x - Map.get(grid, :column_size)
-      id = Atom.to_string(hd(acc))
-
-      {group_spec(
-         [
-           rect_spec({x, max_y},
-             stroke: {1, :white},
-             scissor: {x, max_y},
-             id: String.to_atom(id)
-           ),
-           text_spec(":" <> id,
-             fill: :white,
-             t: {x - 300, 100}
-           )
-         ],
-         id: String.to_atom(id <> "_" <> "group")
-       ), tl(acc)}
-    end)
-    |> Tuple.to_list()
-    |> Enum.map(fn rect ->
-      rect
+    Enum.map(Map.get(grid, :xs_and_ids), fn ix ->
+      group_spec(
+       [
+         rect_spec({elem(ix, 0), max_y},
+           stroke: {1, :white},
+           scissor: {elem(ix, 0), max_y},
+           id: elem(ix, 1)
+         ),
+         text_spec(Atom.to_string(elem(ix, 1)),
+           fill: :white,
+           t: {elem(ix, 0) - 100, 100})],
+        id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group"))
     end)
   end
 
