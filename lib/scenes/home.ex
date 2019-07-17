@@ -16,7 +16,7 @@ defmodule LayoutOMatic.Scene.Home do
   @graph Graph.build()
          |> add_specs_to_graph(Layout.grid(@grid),
            id: :root_grid
-         ) |> IO.inspect
+         )
 
   def init(_, opts) do
     {:ok, opts, push: @graph}

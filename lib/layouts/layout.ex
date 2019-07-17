@@ -35,8 +35,9 @@ defmodule Scenic.Layouts.Layout do
   end
 
   def grid(%Grid{percent_of_columns: percentages} = grid) when not is_nil(percentages) and is_list(percentages) do
-    case Enum.sum(percentages) do
-      100 ->
+    summed_percentages = Enum.sum(percentages)
+    case summed_percentages do
+      summed_percentages when summed_percentages <= 100 ->
         {max_x, _} = Map.get(grid, :max_xy)
 
         sizes =
@@ -79,16 +80,12 @@ defmodule Scenic.Layouts.Layout do
 
     Enum.map(Map.get(grid, :xs_and_ids), fn ix ->
       group_spec(
-       [
-         rect_spec({elem(ix, 0), max_y},
-           stroke: {1, :white},
-           scissor: {elem(ix, 0), max_y},
-           id: elem(ix, 1)
-         ),
-         text_spec(Atom.to_string(elem(ix, 1)),
-           fill: :white,
-           t: {elem(ix, 0) - 100, 100})],
-        id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group"))
+       rect_spec({elem(ix, 0), max_y},
+         stroke: {1, :white},
+         scissor: {elem(ix, 0), max_y},
+         id: elem(ix, 1)
+        ),
+      id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group"))
     end)
   end
 
