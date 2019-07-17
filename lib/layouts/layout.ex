@@ -31,7 +31,7 @@ defmodule Scenic.Layouts.Layout do
       :column_size,
       div(max_x, Map.get(grid, :number_of_columns))
     )
-    |> build_grid()
+    |> get_x_coordinates_equal()
   end
 
   def grid(%Grid{percent_of_columns: percentages} = grid) when not is_nil(percentages) and is_list(percentages) do
@@ -50,14 +50,33 @@ defmodule Scenic.Layouts.Layout do
           :column_size,
           sizes
         )
-        |> get_x_coordinates()
+        |> get_x_coordinates_percentage()
 
       _ ->
         raise Error, message: "Percentages must equal 100", data: percentages
     end
   end
 
-  def get_x_coordinates(grid) do
+  def get_x_coordinates_equal(grid) do
+    Map.put(grid, :xs_and_ids,
+      Enum.map_reduce(1..Map.get(grid, :number_of_columns), [], fn _, acc ->
+        {starting_x, _} = Map.get(grid, :starting_xy)
+        size = Map.get(grid, :column_size)
+        case acc do
+          [] ->
+            {starting_x + size, starting_x + size}
+
+          _ ->
+            {acc + size, acc + size}
+        end
+      end)
+      |> Tuple.to_list()
+      |> hd()
+      |> Enum.zip(Map.get(grid, :grid_ids)))
+    |> build_grid()
+  end
+
+  def get_x_coordinates_percentage(grid) do
     Map.put(grid, :xs_and_ids,
       Enum.map_reduce(Map.get(grid, :column_size), [], fn col, acc ->
         {starting_x, _} = Map.get(grid, :starting_xy)
