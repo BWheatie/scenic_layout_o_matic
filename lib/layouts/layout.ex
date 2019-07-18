@@ -34,15 +34,17 @@ defmodule Scenic.Layouts.Layout do
     |> get_x_coordinates_equal()
   end
 
-  def grid(%Grid{percent_of_columns: percentages} = grid) when not is_nil(percentages) and is_list(percentages) do
+  def grid(%Grid{percent_of_columns: percentages} = grid)
+      when not is_nil(percentages) and is_list(percentages) do
     summed_percentages = Enum.sum(percentages)
+
     case summed_percentages do
       summed_percentages when summed_percentages <= 100 ->
         {max_x, _} = Map.get(grid, :max_xy)
 
         sizes =
           Enum.map(percentages, fn percent ->
-            trunc((percent / 100) * max_x)
+            trunc(percent / 100 * max_x)
           end)
 
         Map.put(
@@ -58,10 +60,13 @@ defmodule Scenic.Layouts.Layout do
   end
 
   def get_x_coordinates_equal(grid) do
-    Map.put(grid, :xs_and_ids,
+    Map.put(
+      grid,
+      :xs_and_ids,
       Enum.map_reduce(1..Map.get(grid, :number_of_columns), [], fn _, acc ->
         {starting_x, _} = Map.get(grid, :starting_xy)
         size = Map.get(grid, :column_size)
+
         case acc do
           [] ->
             {starting_x + size, starting_x + size}
@@ -72,25 +77,30 @@ defmodule Scenic.Layouts.Layout do
       end)
       |> Tuple.to_list()
       |> hd()
-      |> Enum.zip(Map.get(grid, :grid_ids)))
+      |> Enum.zip(Map.get(grid, :grid_ids))
+    )
     |> build_grid()
   end
 
   def get_x_coordinates_percentage(grid) do
-    Map.put(grid, :xs_and_ids,
-      Enum.map_reduce(Map.get(grid, :column_size), [], fn col, acc ->
+    Map.put(
+      grid,
+      :xs_and_ids,
+      Enum.map_reduce(Map.get(grid, :column_size), [], fn size, acc ->
         {starting_x, _} = Map.get(grid, :starting_xy)
+
         case acc do
           [] ->
-            {starting_x + col, starting_x + col}
+            {starting_x + size, starting_x + size}
 
           _ ->
-            {acc + col, acc + col}
+            {acc + size, acc + size}
         end
       end)
       |> Tuple.to_list()
       |> hd()
-      |> Enum.zip(Map.get(grid, :grid_ids)))
+      |> Enum.zip(Map.get(grid, :grid_ids))
+    )
     |> build_grid()
   end
 
@@ -99,12 +109,13 @@ defmodule Scenic.Layouts.Layout do
 
     Enum.map(Map.get(grid, :xs_and_ids), fn ix ->
       group_spec(
-       rect_spec({elem(ix, 0), max_y},
-         stroke: {1, :white},
-         scissor: {elem(ix, 0), max_y},
-         id: elem(ix, 1)
+        rect_spec({elem(ix, 0), max_y},
+          stroke: {1, :white},
+          scissor: {elem(ix, 0), max_y},
+          id: elem(ix, 1)
         ),
-      id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group"))
+        id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group")
+      )
     end)
   end
 

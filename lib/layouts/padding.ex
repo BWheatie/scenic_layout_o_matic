@@ -3,7 +3,7 @@ defmodule Scenic.Layouts.Padding do
             |> Application.get_env(:viewport)
             |> Map.get(:size)
 
-  ######FIX ME#########
+  ###### FIX ME#########
   # While this does technically pad something it does not take into account the size of the primitive/component.
   # Top and left padding should work no problem but to pad from the bottom or right the size must be taken into account.
 
@@ -11,10 +11,12 @@ defmodule Scenic.Layouts.Padding do
   def padding(pix, {x, y} \\ {0, 0}, {x_viewport, y_viewport} \\ @viewport) when is_number(pix) do
     maybe_x = padding_left_or_right(pix, x)
     maybe_y = padding_top_or_bottom(pix, y)
+
     x =
       case maybe_x >= x_viewport do
         true ->
           x_viewport - pix
+
         _ ->
           maybe_x
       end
@@ -23,6 +25,7 @@ defmodule Scenic.Layouts.Padding do
       case maybe_y >= y_viewport do
         true ->
           y_viewport - pix
+
         _ ->
           maybe_y
       end

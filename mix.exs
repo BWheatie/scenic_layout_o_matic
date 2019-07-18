@@ -25,7 +25,7 @@ defmodule LayoutOMatic.MixProject do
     [
       {:scenic, "~> 0.10"},
       {:scenic_driver_glfw, "~> 0.10"},
-      {:dnssd, git: "https://github.com/benoitc/dnssd_erlang", manager: :rebar},
+      {:dnssd, git: "https://github.com/benoitc/dnssd_erlang", manager: :rebar}
     ]
   end
 end
