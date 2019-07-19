@@ -3,7 +3,7 @@
 use Mix.Config
 
 # Configure the main viewport for the Scenic application
-config :layout_o_matic, :viewport, %{
+config :scenic_layout_o_matic, :viewport, %{
   name: :main_viewport,
   size: {700, 600},
   default_scene: {LayoutOMatic.Scene.Home, nil},

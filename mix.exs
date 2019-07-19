@@ -3,9 +3,9 @@ defmodule LayoutOMatic.MixProject do
 
   def project do
     [
-      app: :layout_o_matic,
+      app: :scenic_layout_o_matic,
       version: "0.1.0",
-      elixir: "~> 1.8",
+      elixir: "~> 1.9",
       build_embedded: true,
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -24,8 +24,7 @@ defmodule LayoutOMatic.MixProject do
   defp deps do
     [
       {:scenic, "~> 0.10"},
-      {:scenic_driver_glfw, "~> 0.10"},
-      {:dnssd, git: "https://github.com/benoitc/dnssd_erlang", manager: :rebar}
+      {:scenic_driver_glfw, "~> 0.10"}
     ]
   end
 end

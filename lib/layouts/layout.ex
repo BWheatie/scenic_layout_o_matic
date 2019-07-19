@@ -7,12 +7,13 @@ defmodule Scenic.Layouts.Layout do
     @moduledoc false
     defexception message: nil, data: nil
   end
-
+  # Relative units? grid relative to another grid thereby relative to the group.
   defmodule Grid do
     @enforce_keys [:max_xy, :grid_ids]
     defstruct [
-      :number_of_columns,
-      :percent_of_columns,
+      :relative_layout,
+      :equal_layout,
+      :percentage_layout,
       :max_xy,
       :starting_xy,
       :grid_ids,
@@ -22,19 +23,35 @@ defmodule Scenic.Layouts.Layout do
     ]
   end
 
-  # Takes integer to create equally sized cols
-  def grid(%Grid{number_of_columns: num} = grid) when not is_nil(num) do
+  def grid(%Grid{relative_layout: percent} = grid) when not is_nil(percent) do
+    {starting_x, _} = Map.get(grid, :starting_xy)
+    {max_x, _} = Map.get(grid, :max_xy)
+
+    sizes =
+      Enum.map([percent], fn p ->
+        trunc(p / 100 * max_x - starting_x)
+      end)
+
+    Map.put(
+      grid,
+      :column_size,
+      sizes
+    )
+    |> get_x_coordinates_percentage()
+  end
+
+  def grid(%Grid{equal_layout: num} = grid) when not is_nil(num) do
     {max_x, _} = Map.get(grid, :max_xy)
 
     Map.put(
       grid,
       :column_size,
-      div(max_x, Map.get(grid, :number_of_columns))
+      div(max_x, Map.get(grid, :equal_layout))
     )
     |> get_x_coordinates_equal()
   end
 
-  def grid(%Grid{percent_of_columns: percentages} = grid)
+  def grid(%Grid{percentage_layout: percentages} = grid)
       when not is_nil(percentages) and is_list(percentages) do
     summed_percentages = Enum.sum(percentages)
 
@@ -55,7 +72,7 @@ defmodule Scenic.Layouts.Layout do
         |> get_x_coordinates_percentage()
 
       _ ->
-        raise Error, message: "Percentages must equal 100", data: percentages
+        raise Error, message: "Percentages cannot be more than 100%", data: percentages
     end
   end
 
@@ -63,7 +80,7 @@ defmodule Scenic.Layouts.Layout do
     Map.put(
       grid,
       :xs_and_ids,
-      Enum.map_reduce(1..Map.get(grid, :number_of_columns), [], fn _, acc ->
+      Enum.map_reduce(1..Map.get(grid, :equal_layout), [], fn _, acc ->
         {starting_x, _} = Map.get(grid, :starting_xy)
         size = Map.get(grid, :column_size)
 
@@ -103,6 +120,7 @@ defmodule Scenic.Layouts.Layout do
     )
     |> build_grid()
   end
+
 
   def build_grid(grid) do
     {_, max_y} = Map.get(grid, :max_xy)

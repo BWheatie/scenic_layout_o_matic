@@ -7,14 +7,14 @@ defmodule LayoutOMatic.Scene.Home do
 
   import Scenic.Primitives
 
-  @viewport :layout_o_matic
+  @viewport :scenic_layout_o_matic
             |> Application.get_env(:viewport)
             |> Map.get(:size)
 
   @grid %Grid{
-    percent_of_columns: [25, 25, 50],
+    relative_layout: 25,
     max_xy: @viewport,
-    grid_ids: [:left, :center, :right],
+    grid_ids: [:relative_grid],
     starting_xy: {0, 0}
   }
 

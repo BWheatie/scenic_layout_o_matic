@@ -5,7 +5,7 @@ defmodule LayoutOMatic do
 
   def start(_type, _args) do
     # load the viewport configuration from config
-    main_viewport_config = Application.get_env(:layout_o_matic, :viewport)
+    main_viewport_config = Application.get_env(:scenic_layout_o_matic, :viewport)
 
     # start the application with the viewport
     children = [
