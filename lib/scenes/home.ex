@@ -12,9 +12,9 @@ defmodule LayoutOMatic.Scene.Home do
             |> Map.get(:size)
 
   @grid %Grid{
-    relative_layout: 25,
+    equal_layout: 3,
     max_xy: @viewport,
-    grid_ids: [:relative_grid],
+    grid_ids: [:left, :center, :right],
     starting_xy: {0, 0}
   }
 
@@ -24,6 +24,11 @@ defmodule LayoutOMatic.Scene.Home do
          )
 
   def init(_, opts) do
+    IO.inspect(@graph)
+    # circle_list = Enum.map(1..4, fn _ ->
+    #   circle_spec(10, stroke: {4, :white})
+    # end)
+    # Graph.add_to(@graph, :relative_grid_group, Layout.auto_layout(:relative_grid_group, circle_list))
     {:ok, opts, push: @graph}
   end
 end

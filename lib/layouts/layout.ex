@@ -7,6 +7,7 @@ defmodule Scenic.Layouts.Layout do
     @moduledoc false
     defexception message: nil, data: nil
   end
+
   # Relative units? grid relative to another grid thereby relative to the group.
   defmodule Grid do
     @enforce_keys [:max_xy, :grid_ids]
@@ -121,7 +122,6 @@ defmodule Scenic.Layouts.Layout do
     |> build_grid()
   end
 
-
   def build_grid(grid) do
     {_, max_y} = Map.get(grid, :max_xy)
 
@@ -132,65 +132,25 @@ defmodule Scenic.Layouts.Layout do
           scissor: {elem(ix, 0), max_y},
           id: elem(ix, 1)
         ),
-        id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group")
+        id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group"),
+        t: {elem(ix, 0) - Map.get(grid, :column_size), elem(Map.get(grid, :starting_xy), 1)}
       )
     end)
   end
 
-  def auto_layout(graph, group, _list_of_specs) do
-    [%{data: data}] = Graph.get(graph, group)
+  # def auto_layout(group_id, list_of_specs) do
 
-    Enum.map(data, fn id ->
-      Graph.get(graph, id)
-    end)
-  end
-
-  # ===========================FIX THIS==========================
-  # Takes a list of components/primitives, size of the container, options: starting x, y
-
-  # def build_container(
-  #       %{
-  #         data: {container_sizex, container_sizey},
-  #         styles: %{translate: {container_locationx, container_locationy}}
-  #       } = container,
-  #       {%{translate: {component_sizex, component_sizey}}, [hd | rest]} = component,
-  #       {nil, nil},
-  #       []
-  #     ) do
-  #   component_size
-
-  #   container_edges =
-  #     {container_locationx + container_sizex, container_locationy + container_sizey}
-
-  #   case container_edges <= @viewport do
-  #     # check if container fits in viewport
-  #     true ->
-  #       case starting_location do
-  #         # First elem to go in container
-  #         {nil, nil} ->
-  #           {hd, {container_locationx, container_locationy} = starting_location} = translate
-  #           translates = [] ++ translate
-  #           build_container(container, component, starting_location, translates)
-
-  #         # subsequent elems to go in container
-  #         {startingx, startingy} ->
-  #           build_container(container, rest, starting_location, translates)
-  #       end
-
-  #     false ->
-  #       {:error, "Container does not fit in viewport"}
-  #   end
-  # end
-
-  # def build_container(
-  #       %{
-  #         data: {container_sizex, container_sizey},
-  #         styles: %{translate: {container_locationx, container_locationy}}
-  #       } = container,
-  #       {%{translate: {component_sizex, component_sizey}}, [hd | rest]} = component,
-  #       {startingx, startingy},
-  #       translates
-  #     ) do
+  #   Enum.map(list_of_specs, fn spec ->
+  #     [%{}] = Graph.get(grid, spec)
+  #     case  do
+  #       translate when is_integer(translate) ->
+  #         # This is a circle
+  #       translate when is_binary(translate) ->
+  #         # This is text
+  #       translate when is_tuple(translate) ->
+  #         # This is everything else
+  #     end
+  #   end)
   #   case still_in_containery?(starting_location, container_edges, {nil, component_width}) do
   #     # elem fits in y of container
   #     true ->
@@ -240,14 +200,6 @@ defmodule Scenic.Layouts.Layout do
   #   end
   # end
 
-  # def still_in_containery?(
-  #       {_, startingy},
-  #       {_, container_edgey},
-  #       {component_width, _}
-  #     ) do
-  #   startingy + component_width <= container_edgey
-  # end
-
   # def still_in_containerx?(
   #       {startingx, _},
   #       {container_edgex, _},
@@ -255,4 +207,12 @@ defmodule Scenic.Layouts.Layout do
   #     ) do
   #   startingx + component_height <= container_edgex
   # end
+  # # ===========================FIX THIS==========================
+  # # def still_in_containery?(
+  # #       {_, startingy},
+  # #       {_, container_edgey},
+  # #       {component_width, _}
+  # #     ) do
+  # #   startingy + component_width <= container_edgey
+  # # end
 end
