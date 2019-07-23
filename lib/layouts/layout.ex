@@ -18,8 +18,7 @@ defmodule Scenic.Layouts.Layout do
       :max_xy,
       :starting_xy,
       :grid_ids,
-      :column_size,
-      :xs_and_ids,
+      :column_sizes,
       opts: [:draw]
     ]
   end
@@ -28,17 +27,14 @@ defmodule Scenic.Layouts.Layout do
     {starting_x, _} = Map.get(grid, :starting_xy)
     {max_x, _} = Map.get(grid, :max_xy)
 
-    sizes =
+    Map.put(
+      grid,
+      :column_sizes,
       Enum.map([percent], fn p ->
         trunc(p / 100 * max_x - starting_x)
       end)
-
-    Map.put(
-      grid,
-      :column_size,
-      sizes
     )
-    |> get_x_coordinates_percentage()
+    |> get_x_coordinates()
   end
 
   def grid(%Grid{equal_layout: num} = grid) when not is_nil(num) do
@@ -46,96 +42,65 @@ defmodule Scenic.Layouts.Layout do
 
     Map.put(
       grid,
-      :column_size,
-      div(max_x, Map.get(grid, :equal_layout))
+      :column_sizes,
+      Enum.map(1..Map.get(grid, :equal_layout), fn _ ->
+        div(max_x, Map.get(grid, :equal_layout))
+      end)
     )
-    |> get_x_coordinates_equal()
+    |> get_x_coordinates()
   end
 
   def grid(%Grid{percentage_layout: percentages} = grid)
       when not is_nil(percentages) and is_list(percentages) do
-    summed_percentages = Enum.sum(percentages)
-
-    case summed_percentages do
-      summed_percentages when summed_percentages <= 100 ->
+    case Enum.sum(percentages) do
+      sum when sum <= 100 ->
         {max_x, _} = Map.get(grid, :max_xy)
-
-        sizes =
-          Enum.map(percentages, fn percent ->
-            trunc(percent / 100 * max_x)
-          end)
 
         Map.put(
           grid,
-          :column_size,
-          sizes
+          :column_sizes,
+          Enum.map(percentages, fn percent ->
+            trunc(percent / 100 * max_x)
+          end)
         )
-        |> get_x_coordinates_percentage()
+        |> get_x_coordinates()
 
       _ ->
         raise Error, message: "Percentages cannot be more than 100%", data: percentages
     end
   end
 
-  def get_x_coordinates_equal(grid) do
-    Map.put(
-      grid,
-      :xs_and_ids,
-      Enum.map_reduce(1..Map.get(grid, :equal_layout), [], fn _, acc ->
-        {starting_x, _} = Map.get(grid, :starting_xy)
-        size = Map.get(grid, :column_size)
+  def get_x_coordinates(grid) do
+    ids_and_sizes = Enum.zip(Map.get(grid, :grid_ids), Map.get(grid, :column_sizes))
 
-        case acc do
-          [] ->
-            {starting_x + size, starting_x + size}
+    Enum.map_reduce(ids_and_sizes, [], fn i, acc ->
+      starting_xy = Map.get(grid, :starting_xy)
+      {_, max_y} = Map.get(grid, :max_xy)
 
-          _ ->
-            {acc + size, acc + size}
-        end
-      end)
-      |> Tuple.to_list()
-      |> hd()
-      |> Enum.zip(Map.get(grid, :grid_ids))
-    )
-    |> build_grid()
-  end
+      case acc do
+        [] ->
+          {build_grid(max_y, elem(i, 1), starting_xy, elem(i, 0)),
+           elem(starting_xy, 0) + elem(i, 1)}
 
-  def get_x_coordinates_percentage(grid) do
-    Map.put(
-      grid,
-      :xs_and_ids,
-      Enum.map_reduce(Map.get(grid, :column_size), [], fn size, acc ->
-        {starting_x, _} = Map.get(grid, :starting_xy)
-
-        case acc do
-          [] ->
-            {starting_x + size, starting_x + size}
-
-          _ ->
-            {acc + size, acc + size}
-        end
-      end)
-      |> Tuple.to_list()
-      |> hd()
-      |> Enum.zip(Map.get(grid, :grid_ids))
-    )
-    |> build_grid()
-  end
-
-  def build_grid(grid) do
-    {_, max_y} = Map.get(grid, :max_xy)
-
-    Enum.map(Map.get(grid, :xs_and_ids), fn ix ->
-      group_spec(
-        rect_spec({elem(ix, 0), max_y},
-          stroke: {1, :white},
-          scissor: {elem(ix, 0), max_y},
-          id: elem(ix, 1)
-        ),
-        id: String.to_atom(Atom.to_string(elem(ix, 1)) <> "_group"),
-        t: {elem(ix, 0) - Map.get(grid, :column_size), elem(Map.get(grid, :starting_xy), 1)}
-      )
+        _ ->
+          {build_grid(max_y, elem(i, 1), {acc, elem(starting_xy, 1)}, elem(i, 0)),
+           acc + elem(i, 1)}
+      end
     end)
+    |> elem(0)
+    |> IO.inspect()
+  end
+
+  def build_grid(max_y, size, starting_xy, id) do
+    group_spec(
+      rect_spec({elem(starting_xy, 0) + size, max_y},
+        stroke: {1, :white},
+        scissor: {elem(starting_xy, 0) + size, max_y},
+        id: id
+      ),
+      id: String.to_atom(Atom.to_string(id) <> "_group"),
+      t: {elem(starting_xy, 0), elem(starting_xy, 1)}
+    )
   end
 
   # def auto_layout(group_id, list_of_specs) do
