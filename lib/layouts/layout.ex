@@ -88,14 +88,13 @@ defmodule Scenic.Layouts.Layout do
       end
     end)
     |> elem(0)
-    |> IO.inspect()
   end
 
   def build_grid(max_y, size, starting_xy, id) do
     group_spec(
-      rect_spec({elem(starting_xy, 0) + size, max_y},
+      rect_spec({size, max_y},
         stroke: {1, :white},
-        scissor: {elem(starting_xy, 0) + size, max_y},
+        scissor: {size, max_y},
         id: id
       ),
       id: String.to_atom(Atom.to_string(id) <> "_group"),
