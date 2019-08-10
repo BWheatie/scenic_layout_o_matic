@@ -13,7 +13,7 @@ defmodule LayoutOMatic.Scene.Home do
             |> Map.get(:size)
 
   @grid %GridBuilder{
-    equal_layout: 2,
+    grid_template: [{2, "equal"}],
     max_xy: @viewport,
     grid_ids: [:left, :right],
     starting_xy: {0, 0}
@@ -27,9 +27,8 @@ defmodule LayoutOMatic.Scene.Home do
   def init(_, opts) do
     list = [:this_circle, :that_circle, :other_circle, :another_circle]
     graph =
-      @graph
-      |> Enum.map(list, fn id ->
-        circle(50, stroke: {4, :white})
+      Enum.map(list, fn id ->
+        @graph |> circle(50, stroke: {4, :white})
       end)
       |> AutoLayout.auto_layout(:left, list)
 

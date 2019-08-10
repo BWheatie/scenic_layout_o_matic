@@ -18,51 +18,45 @@ defmodule Layouts.AutoLayout do
     Enum.map_reduce(list_of_prim_ids, [], fn p_id, acc ->
       case acc do
         [] ->
-          [%{data: size} = primitive] = Graph.get(graph, p_id)
+          [%{data: size}] = Graph.get(graph, p_id)
           {Graph.modify(graph, rect_id, &update_opts(&1, t: starting_xy)), {starting_xy, size}}
 
         _ ->
-          [%{data: size} = primitive] = Graph.get(graph, p_id)
-          {starting_xy, size} = List.first(acc)
+          [%{data: size}] = Graph.get(graph, p_id)
+          {starting_xy, _} = List.first(acc)
 
-          potential_translate =
-            case size do
-              size when is_arc(size) ->
-                nil
+          case size do
+            size when is_arc(size) ->
+              nil
 
-              size when is_circle(size) ->
-                case Circle.translate(size, starting_xy) do
-                  true ->
-                    Graph.modify(
-                      graph,
-                      rect_id,
-                      &update_opts(&1, t: potential_translate)
-                    )
-                end
+            size when is_circle(size) ->
+              Graph.modify(
+                graph,
+                rect_id,
+                &update_opts(&1, t: Circle.translate(size, max_xy, starting_xy))
+              )
 
-              size when is_rect(size) ->
-                nil
+            size when is_rect(size) ->
+              nil
 
-              size when is_rrect(size) ->
-                nil
+            size when is_rrect(size) ->
+              nil
 
-              size when is_line(size) ->
-                nil
+            size when is_line(size) ->
+              nil
 
-              size when is_path(size) ->
-                nil
+            size when is_path(size) ->
+              nil
 
-              size when is_quad(size) ->
-                nil
+            size when is_quad(size) ->
+              nil
 
-              size when is_sector(size) ->
-                nil
+            size when is_sector(size) ->
+              nil
 
-              size when is_triangle(size) ->
-                nil
-            end
-
-
+            size when is_triangle(size) ->
+              nil
+          end
       end
     end)
   end
