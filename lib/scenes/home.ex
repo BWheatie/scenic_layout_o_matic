@@ -27,11 +27,11 @@ defmodule LayoutOMatic.Scene.Home do
   def init(_, opts) do
     list = [:this_circle, :that_circle, :other_circle, :another_circle]
     graph =
-      Enum.map(list, fn id ->
-        @graph |> circle(50, stroke: {4, :white})
+      Enum.reduce(list, @graph, fn id, acc ->
+        acc |> circle(50, stroke: {4, :white}, id: id)
       end)
-      |> AutoLayout.auto_layout(:left, list)
+    {:ok, new_graph} = AutoLayout.layout(graph, :left_group, list)
 
-    {:ok, opts, push: graph}
+    {:ok, opts, push: new_graph}
   end
 end

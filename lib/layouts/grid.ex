@@ -47,7 +47,6 @@ defmodule Scenic.Layouts.Grid do
   end
 
   def get_x_coordinates(grid) do
-    IO.inspect(grid)
     ids_and_sizes = Enum.zip(Map.get(grid, :grid_ids), Map.get(grid, :column_sizes))
     hidden = Map.get(grid, :hidden)
 
