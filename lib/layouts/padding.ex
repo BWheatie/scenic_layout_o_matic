@@ -1,5 +1,6 @@
-# defmodule Scenic.Layouts.Padding do
-#   @viewport :layout_o_matic
+# defmodule LayoutOMatic.Layouts.Padding do
+
+#   @viewport :scenic_layout_o_matic
 #             |> Application.get_env(:viewport)
 #             |> Map.get(:size)
 
@@ -8,9 +9,9 @@
 #   # Top and left padding should work no problem but to pad from the bottom or right the size must be taken into account.
 
 #   # Take number of pixels to pad by and coordinates to start padding. Returns {x, y} for padding
-#   def padding(pix, {x, y} \\ {0, 0}, {x_viewport, y_viewport} \\ @viewport) when is_number(pix) do
-#     maybe_x = padding_left_or_right(pix, x)
-#     maybe_y = padding_top_or_bottom(pix, y)
+#   def pad(pix, {x, y} \\ {0, 0}, {x_viewport, y_viewport} \\ @viewport) when is_number(pix) do
+#     maybe_x = do_padding(pix, x)
+#     maybe_y = do_padding(pix, y)
 
 #     x =
 #       case maybe_x >= x_viewport do
@@ -34,17 +35,14 @@
 #   end
 
 #   # Takes pixels to padd x by.
-#   # def padding_top(pix, {x, y}) when is_number(pix), do: {padding_top_or_bottom(pix, x), y}
+#   def left(pix, x) when is_number(pix), do: do_padding(pix, x)
 
-#   # def padding_bottom(pix, {x, y}) when is_number(pix), do: {x, padding_top_or_bottom(pix, y)}
+#   def right(pix, x) when is_number(pix), do: do_padding(pix, x)
 
-#   # def padding_left(pix, {x, y}) when is_number(pix), do: {padding_left_or_right(pix, x), y}
+#   def top(pix, y) when is_number(pix), do: do_padding(pix, y)
 
-#   # def padding_right(pix, {x, y}) when is_number(pix), do: {x, padding_left_or_right(pix, y)}
+#   def bottom(pix, y) when is_number(pix), do: do_padding(pix, y)
 
-#   defp padding_left_or_right(pix, x) when x == 0, do: pix
-#   defp padding_left_or_right(pix, x) when is_number(pix) and is_number(x), do: x + pix
-
-#   defp padding_top_or_bottom(pix, y) when y == 0, do: pix
-#   defp padding_top_or_bottom(pix, y) when is_number(pix) and is_number(y), do: y - pix
+#   defp do_padding(pix, start_point) when start_point == 0, do: pix
+#   defp do_padding(pix, start_point) when is_number(pix) and is_number(start_point), do: start_point + pix
 # end

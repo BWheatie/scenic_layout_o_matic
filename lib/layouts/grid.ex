@@ -10,12 +10,12 @@ defmodule Scenic.Layouts.Grid do
   defmodule GridBuilder do
     @enforce_keys [:grid_template, :grid_ids]
     defstruct viewport: %{},
-      grid_template: [{1, "equal"}],
-      max_xy: {700, 600},
-      starting_xy: {0, 0},
-      grid_ids: nil,
-      column_sizes: nil,
-      opts: [draw: true]
+              grid_template: [{1, "equal"}],
+              max_xy: {700, 600},
+              starting_xy: {0, 0},
+              grid_ids: nil,
+              column_sizes: nil,
+              opts: [draw: true]
   end
 
   def grid(%GridBuilder{} = grid) do

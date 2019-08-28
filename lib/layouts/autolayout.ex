@@ -12,19 +12,23 @@ defmodule Scenic.Layouts.AutoLayout do
       |> hd()
       |> String.to_atom()
 
-    [%{transforms: %{translate: starting_xy}}] = Graph.get(graph, group_id)
+    [%{transforms: %{translate: grid_xy}}] = Graph.get(graph, group_id)
     [%{data: max_xy}] = Graph.get(graph, rect_id)
 
     graph =
       Enum.reduce(list_of_prim_ids, [], fn p_id, acc ->
         [%{module: module} = primitive] = Graph.get(graph, p_id)
+
         {starting_xy, graph} =
           case acc do
             [] ->
-              {starting_xy, graph}
+              {grid_xy, graph}
 
             _ ->
-              {elem(acc, 0), elem(acc, 1)}
+              starting_xy_size =
+                {elem(elem(acc, 0), 0) + Map.get(primitive, :data), elem(elem(acc, 0), 1)}
+
+              {starting_xy_size, elem(acc, 1)}
           end
 
         case module do
@@ -32,7 +36,7 @@ defmodule Scenic.Layouts.AutoLayout do
             nil
 
           Scenic.Primitive.Circle ->
-            case Circle.translate(primitive, max_xy, starting_xy) do
+            case Circle.translate(primitive, max_xy, starting_xy, grid_xy) do
               {:ok, xy} ->
                 new_graph = Graph.modify(graph, p_id, &update_opts(&1, t: xy))
                 {xy, new_graph}

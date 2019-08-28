@@ -1,36 +1,50 @@
 defmodule LayoutOMatic.Layouts.Circle do
   # A circles size int is the radius and the translate is based on the center
-  def translate(%{data: size, styles: %{stroke: stroke}}, max_xy, {starting_x, starting_y}) do
-    stroke_fill = elem(stroke, 0)
-    x = translate_x(size + stroke_fill, starting_x)
-
-    case fits_in_x?(x, max_xy) do
-      #fits in x
+  def translate(
+        %{data: size, styles: %{stroke: stroke}},
+        max_xy,
+        {starting_x, starting_y} = starting_xy,
+        {grid_x, grid_y} = grid_xy
+      ) do
+    size_stroke_fill = elem(stroke, 0) + size |> IO.inspect
+    case starting_xy == grid_xy do
+      # if starting new group of primitives use the grid translate
       true ->
-        {:ok, {x, size + stroke_fill}}
+        {:ok, {grid_x + size_stroke_fill, grid_y + size_stroke_fill}}
 
-      #doesnt fit in x
       false ->
-        #fit in new y?
-        y = translate_y(size, starting_y)
-        case fits_in_y?(y, max_xy) do
-          #fits in new y, check x
+        # already in a new group, use starting_xy
+        case fits_in_x?(starting_x + size_stroke_fill, max_xy) do
+          # fits in x
           true ->
-            fits_in_x?(x, max_xy)
+            # fit in y?
+            case fits_in_y?(starting_y, max_xy) do
+              true ->
+                # fits
+                {:ok, {starting_x + size_stroke_fill, starting_y}}
 
-            {:ok, {x, y}}
+              # Does not fit
+              false ->
+                {:error, "Does not fit in grid"}
+            end
 
+          # doesnt fit in x
           false ->
-            {:error, "Does not fit in the grid"}
+            # fit in new y?
+            new_y = grid_y + (size * 3) + elem(stroke, 0)
+
+            case fits_in_y?(new_y, max_xy) do
+              # fits in new y, check x
+              true ->
+                grid_x = elem(grid_xy, 0) + size
+                {:ok, {grid_x, new_y}}
+
+              false ->
+                {:error, "Does not fit in the grid"}
+            end
         end
     end
   end
-
-  def translate_x(size, starting_x),
-    do: starting_x + size
-
-  def translate_y(size, starting_y),
-    do: starting_y + size
 
   def fits_in_x?(potential_x, {max_x, _}),
     do: potential_x <= max_x
