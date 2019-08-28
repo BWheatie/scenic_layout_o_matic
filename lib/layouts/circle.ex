@@ -6,7 +6,7 @@ defmodule LayoutOMatic.Layouts.Circle do
         {starting_x, starting_y} = starting_xy,
         {grid_x, grid_y} = grid_xy
       ) do
-    size_stroke_fill = elem(stroke, 0) + size |> IO.inspect
+    size_stroke_fill = elem(stroke, 0) + size
     case starting_xy == grid_xy do
       # if starting new group of primitives use the grid translate
       true ->
@@ -36,7 +36,7 @@ defmodule LayoutOMatic.Layouts.Circle do
             case fits_in_y?(new_y, max_xy) do
               # fits in new y, check x
               true ->
-                grid_x = elem(grid_xy, 0) + size
+                grid_x = elem(grid_xy, 0) + size + elem(stroke, 0)
                 {:ok, {grid_x, new_y}}
 
               false ->
