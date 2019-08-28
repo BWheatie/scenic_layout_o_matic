@@ -1,11 +1,14 @@
-defmodule LayoutOMatic.Layouts.Circle do
+defmodule LayoutOMatic.Layouts.Line do
   # A circles size int is the radius and the translate is based on the center
   def translate(
-        %{data: size, styles: %{stroke: stroke}},
+        %{data: line_points, styles: %{stroke: stroke}},
         max_xy,
         {starting_x, starting_y} = starting_xy,
         {grid_x, grid_y} = grid_xy
       ) do
+
+    size = line_size(line_points)
+
     size_stroke_fill = elem(stroke, 0) + size
     case starting_xy == grid_xy do
       # if starting new group of primitives use the grid translate
@@ -46,9 +49,50 @@ defmodule LayoutOMatic.Layouts.Circle do
     end
   end
 
-  def fits_in_x?(potential_x, {max_x, _}),
+  defp line_size(line_points) do
+    line_x1 =
+      line_points
+      |> elem(0)
+      |> elem(0)
+
+    line_x2 =
+      line_points
+      |> elem(1)
+      |> elem(0)
+
+    line_size_x =
+      case line_x1 < line_x2 do
+        true ->
+          line_x2 - line_x1
+
+        false ->
+          line_x1 - line_x2
+      end
+
+    line_y1 =
+      line_points
+      |> elem(0)
+      |> elem(1)
+
+    line_y2 =
+      line_points
+      |> elem(1)
+      |> elem(1)
+
+    line_size_y =
+      case line_y1 < line_y2 do
+        true ->
+          line_y2 - line_y1
+
+        false ->
+          line_y1 - line_y2
+      end
+    {line_size_x, line_size_y}
+  end
+
+  defp fits_in_x?(potential_x, {max_x, _}),
     do: potential_x <= max_x
 
-  def fits_in_y?(potential_y, {_, max_y}),
+  defp fits_in_y?(potential_y, {_, max_y}),
     do: potential_y <= max_y
 end

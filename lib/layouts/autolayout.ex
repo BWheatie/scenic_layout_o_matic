@@ -52,7 +52,14 @@ defmodule Scenic.Layouts.AutoLayout do
             nil
 
           Scenic.Primitive.Line ->
-            nil
+            case Line.translate(primitive, max_xy, starting_xy, grid_xy) do
+              {:ok, xy} ->
+                new_graph = Graph.modify(graph, p_id, &line(xy))
+                {xy, new_graph}
+
+              {:error, error} ->
+                {:error, error}
+            end
 
           Scenic.Primitive.Path ->
             nil
