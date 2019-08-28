@@ -18,6 +18,7 @@ defmodule Scenic.Layouts.AutoLayout do
     graph =
       Enum.reduce(list_of_prim_ids, [], fn p_id, acc ->
         [%{module: module} = primitive] = Graph.get(graph, p_id)
+
         {starting_xy, graph} =
           case acc do
             [] ->
