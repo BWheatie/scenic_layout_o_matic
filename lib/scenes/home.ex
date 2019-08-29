@@ -29,7 +29,7 @@ defmodule LayoutOMatic.Scene.Home do
 
     graph =
       Enum.reduce(list, @graph, fn id, acc ->
-        acc |> circle(100, stroke: {4, :white}, id: id)
+        acc |> rect({200, 300}, stroke: {4, :white}, id: id)
       end)
 
     {:ok, new_graph} = AutoLayout.layout(graph, :left_group, list)
