@@ -1,6 +1,7 @@
 defmodule Scenic.Layouts.AutoLayout do
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Circle
+  alias LayoutOMatic.Layouts.Rectangle
 
   import Scenic.Primitives
 
@@ -25,10 +26,12 @@ defmodule Scenic.Layouts.AutoLayout do
               {grid_xy, graph}
 
             _ ->
-              starting_xy_size =
-                {elem(elem(acc, 0), 0) + Map.get(primitive, :data), elem(elem(acc, 0), 1)}
+              # {width, height}
+              # starting_xy_size =
+              #   {elem(elem(acc, 0), 0) + Map.get(primitive, :data), elem(elem(acc, 0), 1)}
 
-              {starting_xy_size, elem(acc, 1)}
+              # {starting_xy_size, elem(acc, 1)}
+              acc
           end
 
         case module do
@@ -45,8 +48,15 @@ defmodule Scenic.Layouts.AutoLayout do
                 {:error, error}
             end
 
-          Scenic.Primitive.Rect ->
-            nil
+          Scenic.Primitive.Rectangle ->
+            case Rectangle.translate(primitive, max_xy, starting_xy, grid_xy) do
+              {:ok, xy} ->
+                new_graph = Graph.modify(graph, p_id, &update_opts(&1, t: xy))
+                {xy, new_graph}
+
+              {:error, error} ->
+                {:error, error}
+            end
 
           Scenic.Primitive.RRect ->
             nil

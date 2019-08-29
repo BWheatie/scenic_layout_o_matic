@@ -14,14 +14,14 @@ defmodule LayoutOMatic.Layouts.Circle do
 
       false ->
         # already in a new group, use starting_xy
-        case fits_in_x?(starting_x + size_stroke_fill, max_xy) do
+        case fits_in_x?(starting_x + size + size_stroke_fill, max_xy) do
           # fits in x
           true ->
             # fit in y?
-            case fits_in_y?(starting_y, max_xy) do
+            case fits_in_y?(starting_y , max_xy) do
               true ->
                 # fits
-                {:ok, {starting_x + size_stroke_fill, starting_y}}
+                {:ok, {starting_x + size + size_stroke_fill, starting_y}}
 
               # Does not fit
               false ->
