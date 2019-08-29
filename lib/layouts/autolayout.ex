@@ -26,11 +26,6 @@ defmodule Scenic.Layouts.AutoLayout do
               {grid_xy, graph}
 
             _ ->
-              # {width, height}
-              # starting_xy_size =
-              #   {elem(elem(acc, 0), 0) + Map.get(primitive, :data), elem(elem(acc, 0), 1)}
-
-              # {starting_xy_size, elem(acc, 1)}
               acc
           end
 
