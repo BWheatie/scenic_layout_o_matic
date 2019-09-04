@@ -1,7 +1,7 @@
-defmodule LayoutOMatic.Layouts.Primitives.Rectangle do
+defmodule LayoutOMatic.Layouts.Primitives.RoundedRectangle do
   # A circles size int is the radius and the translate is based on the center
   def translate(
-        %{data: {width, height}, styles: %{stroke: stroke}},
+        %{data: {width, height, _}, styles: %{stroke: stroke}},
         max_xy,
         {starting_x, starting_y} = starting_xy,
         {grid_x, grid_y} = grid_xy

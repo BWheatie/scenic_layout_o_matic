@@ -4,9 +4,11 @@ defmodule LayoutOMatic.Scene.Home do
   alias Scenic.Graph
   alias Scenic.Layouts.Grid
   alias Scenic.Layouts.Grid.GridBuilder
-  alias Scenic.Layouts.AutoLayout
+  alias Scenic.Layouts.Primitives.AutoLayout, as: Primitive
+  alias Scenic.Layouts.Components.AutoLayout, as: Component
 
   import Scenic.Primitives
+  import Scenic.Components
 
   @viewport :scenic_layout_o_matic
             |> Application.get_env(:viewport)
@@ -25,14 +27,15 @@ defmodule LayoutOMatic.Scene.Home do
          )
 
   def init(_, opts) do
-    list = [:this_circle, :that_circle, :other_circle, :another_circle]
+    list = [:this_button, :that_button, :other_button, :another_button]
 
     graph =
       Enum.reduce(list, @graph, fn id, acc ->
-        acc |> rect({200, 300}, stroke: {4, :white}, id: id)
+        # acc |> circle(50, id: id, stroke: {4, :white})
+        acc |> button("BUTTON", id: id, width: 200, height: 70)
       end)
-
-    {:ok, new_graph} = AutoLayout.layout(graph, :left_group, list)
+    # new_graph = button("BUTTON", id: id, width: 90, height: 70)
+    {:ok, new_graph} = Component.layout(graph, :left_group, list)
 
     {:ok, opts, push: new_graph}
   end

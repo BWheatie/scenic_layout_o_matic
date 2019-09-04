@@ -1,4 +1,4 @@
-defmodule LayoutOMatic.Layouts.Circle do
+defmodule LayoutOMatic.Layouts.Primitives.Circle do
   # A circles size int is the radius and the translate is based on the center
   def translate(
         %{data: size, styles: %{stroke: stroke}},
@@ -7,6 +7,7 @@ defmodule LayoutOMatic.Layouts.Circle do
         {grid_x, grid_y} = grid_xy
       ) do
     size_stroke_fill = elem(stroke, 0) + size
+
     case starting_xy == grid_xy do
       # if starting new group of primitives use the grid translate
       true ->
@@ -18,7 +19,7 @@ defmodule LayoutOMatic.Layouts.Circle do
           # fits in x
           true ->
             # fit in y?
-            case fits_in_y?(starting_y , max_xy) do
+            case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
                 {:ok, {starting_x + size + size_stroke_fill, starting_y}}
@@ -31,7 +32,7 @@ defmodule LayoutOMatic.Layouts.Circle do
           # doesnt fit in x
           false ->
             # fit in new y?
-            new_y = grid_y + (size * 3) + elem(stroke, 0)
+            new_y = grid_y + size * 3 + elem(stroke, 0)
 
             case fits_in_y?(new_y, max_xy) do
               # fits in new y, check x

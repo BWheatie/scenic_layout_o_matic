@@ -1,7 +1,9 @@
-defmodule Scenic.Layouts.AutoLayout do
+defmodule Scenic.Layouts.Primitives.AutoLayout do
   alias Scenic.Graph
-  alias LayoutOMatic.Layouts.Circle
-  alias LayoutOMatic.Layouts.Rectangle
+  alias LayoutOMatic.Layouts.Primitives.Circle
+  alias LayoutOMatic.Layouts.Primitives.Rectangle
+  alias LayoutOMatic.Layouts.Primitives.RoundedRectangle
+  alias LayoutOMatic.Layouts.Primitives.Triangle
 
   import Scenic.Primitives
 
@@ -14,7 +16,7 @@ defmodule Scenic.Layouts.AutoLayout do
       |> String.to_atom()
 
     [%{transforms: %{translate: grid_xy}}] = Graph.get(graph, group_id)
-    [%{data: max_xy}] = Graph.get(graph, rect_id)
+    [%{data: max_xy}] = Graph.get(graph, rect_id) |> IO.inspect
 
     graph =
       Enum.reduce(list_of_prim_ids, [], fn p_id, acc ->
@@ -53,8 +55,15 @@ defmodule Scenic.Layouts.AutoLayout do
                 {:error, error}
             end
 
-          Scenic.Primitive.RRect ->
-            nil
+          Scenic.Primitive.RoundedRectangle ->
+            case RoundedRectangle.translate(primitive, max_xy, starting_xy, grid_xy) do
+              {:ok, xy} ->
+                new_graph = Graph.modify(graph, p_id, &update_opts(&1, t: xy))
+                {xy, new_graph}
+
+              {:error, error} ->
+                {:error, error}
+            end
 
           Scenic.Primitive.Line ->
             nil
@@ -69,7 +78,14 @@ defmodule Scenic.Layouts.AutoLayout do
             nil
 
           Scenic.Primitive.Triangle ->
-            nil
+            case Triangle.translate(primitive, max_xy, starting_xy, grid_xy) do
+              {:ok, xy} ->
+                new_graph = Graph.modify(graph, p_id, &update_opts(&1, t: xy))
+                {xy, new_graph}
+
+              {:error, error} ->
+                {:error, error}
+            end
 
           _ ->
             {:error, "Must be a primitive to auto-layout"}
