@@ -1,10 +1,11 @@
 defmodule Scenic.Layouts.Components.AutoLayout do
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Components.Button
+  alias LayoutOMatic.Layouts.Components.Slider
 
   import Scenic.Primitives
 
-  def layout(graph, group_id, list_of_comp_ids) do
+  def auto_layout(graph, group_id, list_of_comp_ids) do
     rect_id =
       group_id
       |> Atom.to_string()
@@ -31,7 +32,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
         case comp do
           Scenic.Component.Button ->
             case Button.translate(component, max_xy, starting_xy, grid_xy) do
-              {:ok, {x, y}, {w, h}} ->
+              {:ok, {x, y}, {w, _}} ->
                 new_graph = Graph.modify(graph, c_id, &update_opts(&1, t: {x, y}))
                 {{x + w, y}, new_graph}
 
@@ -41,6 +42,15 @@ defmodule Scenic.Layouts.Components.AutoLayout do
 
           Scenic.Component.Checkbox ->
             nil
+            ## TODO: First determine if there is text: if there is,
+            # case Checkbox.translate(component, max_xy, starting_xy, grid_xy) do
+            #   {:ok, {x, y}, {w, h}} ->
+            #     new_graph = Graph.modify(graph, c_id, &update_opts(&1, t: {x, y}))
+            #     {{x + w, y}, new_graph}
+
+            #   {:error, error} ->
+            #     {:error, error}
+            # end
 
           Scenic.Component.Dropdown ->
             nil
@@ -49,7 +59,14 @@ defmodule Scenic.Layouts.Components.AutoLayout do
             nil
 
           Scenic.Component.Slider ->
-            nil
+            case Slider.translate(component, max_xy, starting_xy, grid_xy) do
+              {:ok, {x, y}, {w, h}} ->
+                new_graph = Graph.modify(graph, c_id, &update_opts(&1, t: {x, y}))
+                {{x + w, y}, new_graph}
+
+              {:error, error} ->
+                {:error, error}
+            end
 
           Scenic.Component.TextField ->
             nil

@@ -24,7 +24,8 @@ defmodule LayoutOMatic.MixProject do
   defp deps do
     [
       {:scenic, "~> 0.10"},
-      {:scenic_driver_glfw, "~> 0.10"}
+      {:scenic_driver_glfw, "~> 0.10"},
+      {:font_metrics, "~> 0.3"}
     ]
   end
 end
