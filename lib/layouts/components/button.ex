@@ -3,20 +3,28 @@ defmodule LayoutOMatic.Layouts.Components.Button do
   @default_font_size 20
   @default_font :roboto
 
-  def translate(
-        %{data: {_, text}, styles: %{width: width, height: height, button_font_size: font_size}},
-        max_xy,
-        {starting_x, starting_y} = starting_xy,
-        {grid_x, grid_y} = grid_xy
-      ) do
+  def translate(%{
+        component: component,
+        starting_xy: starting_xy,
+        grid_xy: grid_xy,
+        max_xy: max_xy
+      } = layout) do
+
+    {_, text} = Map.get(component, :data)
+
+    %{width: requested_width, height: requested_height, button_font_size: font_size} =
+      Map.get(component, :styles)
+
+    {starting_x, starting_y} = starting_xy
+    {grid_x, grid_y} = grid_xy
     metrics = get_font_metrics(text, font_size)
-    height = get_height(height, metrics)
-    width = get_width(width, metrics)
+    height = get_height(requested_height, metrics)
+    width = get_width(requested_width, metrics)
 
     case starting_xy == grid_xy do
       # if starting new group of primitives use the grid translate
       true ->
-        {:ok, {starting_x, starting_y}, {width, height}}
+        {:ok, {starting_x, starting_y}, {width, height}, layout}
 
       false ->
         # already in a new group, use starting_xy
@@ -27,7 +35,7 @@ defmodule LayoutOMatic.Layouts.Components.Button do
             case fits_in_y?(starting_y + height, max_xy) do
               true ->
                 # fits
-                {:ok, {starting_x, starting_y}, {width, height}}
+                {:ok, {starting_x, starting_y}, {width, height}, layout}
 
               # Does not fit
               false ->
@@ -42,7 +50,8 @@ defmodule LayoutOMatic.Layouts.Components.Button do
             case fits_in_y?(new_y, max_xy) do
               # fits in new y, check x
               true ->
-                {:ok, {grid_x, new_y}, {width, height}}
+                layout = %{layout | grid_xy: {grid_x, new_y}}
+                {:ok, {grid_x, new_y}, {width, height}, layout}
 
               false ->
                 {:error, "Does not fit in the grid"}
