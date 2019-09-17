@@ -15,7 +15,7 @@ defmodule LayoutOMatic.Scene.Home do
             |> Map.get(:size)
 
   @grid %GridBuilder{
-    grid_template: [{2, "equal"}],
+    grid_template: [{:equal, 2}],
     max_xy: @viewport,
     grid_ids: [:left, :right],
     starting_xy: {0, 0}
@@ -27,16 +27,18 @@ defmodule LayoutOMatic.Scene.Home do
          )
 
   def init(_, opts) do
-    list = [:this_button, :that_button, :other_button, :another_button]
+    # IO.inspect(opts[:viewport])
+    # list = [:this_button, :that_button, :other_button, :another_button]
 
-    graph =
-      Enum.reduce(list, @graph, fn id, acc ->
-        # acc |> circle(50, id: id, stroke: {4, :white})
-        acc |> button("BUTTON", id: id, width: 200, height: 70)
-      end)
-    # new_graph = button("BUTTON", id: id, width: 90, height: 70)
-    {:ok, new_graph} = Component.layout(graph, :left_group, list)
+    # graph =
+    #   Enum.reduce(list, @graph, fn id, acc ->
+    #     # acc |> circle(50, id: id, stroke: {4, :white})
+    #     acc |> button("BUTTON", id: id, width: 200, height: 70)
+    #   end)
 
-    {:ok, opts, push: new_graph}
+    # # new_graph = button("BUTTON", id: id, width: 90, height: 70)
+    # {:ok, new_graph} = Component.auto_layout(graph, :left_group, list)
+    IO.inspect(@graph)
+    {:ok, opts, push: @graph}
   end
 end

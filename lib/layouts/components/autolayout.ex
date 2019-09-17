@@ -1,7 +1,7 @@
 defmodule Scenic.Layouts.Components.AutoLayout do
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Components.Button
-  alias LayoutOMatic.Layouts.Components.Slider
+  # alias LayoutOMatic.Layouts.Components.Slider
 
   import Scenic.Primitives
 
@@ -10,7 +10,12 @@ defmodule Scenic.Layouts.Components.AutoLayout do
               starting_xy: {},
               max_xy: {},
               grid_xy: {},
-              graph: %{}
+              graph: %{},
+              padding: [{:total, 1}],
+              margin: [{:total, 1}],
+              position: :static,
+              float: :none,
+              align: :none
   end
 
   def auto_layout(graph, group_id, list_of_comp_ids) do
