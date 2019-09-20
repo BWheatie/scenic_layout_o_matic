@@ -25,7 +25,9 @@ defmodule LayoutOMatic.MixProject do
     [
       {:scenic, "~> 0.10"},
       {:scenic_driver_glfw, "~> 0.10"},
-      {:font_metrics, "~> 0.3"}
+      {:font_metrics, "~> 0.3"},
+      {:nimble_parsec, "~> 0.2"},
+      {:floki, "~> 0.23.0"}
     ]
   end
 end

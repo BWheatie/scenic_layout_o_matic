@@ -1,4 +1,4 @@
-defmodule LayoutOMatic.Layouts.Components.Button do
+defmodule LayoutOMatic.Layouts.Components.Slider do
   # Buttons size based on :button_font_size with 20 being the default; width/height override
   @default_font_size 20
   @default_font :roboto
@@ -78,11 +78,21 @@ defmodule LayoutOMatic.Layouts.Components.Button do
   end
 
   def get_font_metrics(text, font_size) do
-    font_size = font_size || @default_font_size
     fm = Scenic.Cache.Static.FontMetrics.get!(@default_font)
-    ascent = FontMetrics.ascent(font_size, fm)
-    fm_width = FontMetrics.width(text, font_size, fm)
-    %{font_size: font_size, ascent: ascent, fm_width: fm_width}
+    ascent = FontMetrics.ascent(@default_font_size, fm)
+    fm_width = FontMetrics.width(text, @default_font_size, fm)
+    space_width = FontMetrics.width(' ', @default_font_size, fm)
+    box_width = fm_width + ascent + space_width * 2
+    box_height = trunc(ascent) + 1
+
+    %{
+      font_size: font_size,
+      ascent: ascent,
+      fm_width: fm_width,
+      space_width: space_width,
+      box_width: box_width,
+      box_height: box_height
+    }
   end
 
   def fits_in_x?(potential_x, {max_x, _}),
