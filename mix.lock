@@ -8,11 +8,11 @@
   "html_entities": {:hex, :html_entities, "0.4.0", "f2fee876858cf6aaa9db608820a3209e45a087c5177332799592142b50e89a6b", [:mix], [], "hexpm"},
   "meeseeks": {:hex, :meeseeks, "0.13.1", "1b2a7e964d9e9c679bb177a35c087d7e8548353bbdbf415c031fc63b78bef399", [:mix], [{:meeseeks_html5ever, "~> 0.12.1", [hex: :meeseeks_html5ever, repo: "hexpm", optional: false]}], "hexpm"},
   "meeseeks_html5ever": {:hex, :meeseeks_html5ever, "0.12.1", "718fab10d05b83204524a518b2b88caa37ba6a6e02f82e80d6a7bc47552fb54a", [:mix], [{:rustler, "~> 0.21.0", [hex: :rustler, repo: "hexpm", optional: false]}], "hexpm"},
-  "msgpax": {:hex, :msgpax, "2.2.3", "02be0be1b440a12d7e6f6c45662463d53d01a30b5bd4ab806276453b455f820a", [:mix], [{:plug, "~> 1.0", [hex: :plug, repo: "hexpm", optional: true]}], "hexpm"},
+  "msgpax": {:hex, :msgpax, "2.2.4", "7b3790ef684089076b63c0f08c2f4b079c6311daeb006b69e4ed2bf67518291e", [:mix], [{:plug, "~> 1.0", [hex: :plug, repo: "hexpm", optional: true]}], "hexpm"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.1", "c90796ecee0289dbb5ad16d3ad06f957b0cd1199769641c961cfe0b97db190e0", [:mix], [], "hexpm"},
   "rustler": {:hex, :rustler, "0.21.0", "68cc4fc015d0b9541865ea78e78e9ef2dd91ee4be80bf543fd15791102a45aca", [:mix], [{:toml, "~> 0.5.2", [hex: :toml, repo: "hexpm", optional: false]}], "hexpm"},
   "scenic": {:hex, :scenic, "0.10.2", "f4f0a00eed677ac50a7b297375c0323d03f4273580f17c50b877abfaf0c6dc1f", [:make, :mix], [{:elixir_make, "~> 0.5", [hex: :elixir_make, repo: "hexpm", optional: false]}, {:font_metrics, "~> 0.3", [hex: :font_metrics, repo: "hexpm", optional: false]}], "hexpm"},
-  "scenic_driver_glfw": {:hex, :scenic_driver_glfw, "0.10.0", "01a00c8da910c56ef908bf886826a5a28989a3919b6e63b982e66ba226d3bf9d", [:make, :mix], [{:elixir_make, "~> 0.5", [hex: :elixir_make, repo: "hexpm", optional: false]}, {:scenic, "~> 0.10", [hex: :scenic, repo: "hexpm", optional: false]}], "hexpm"},
+  "scenic_driver_glfw": {:hex, :scenic_driver_glfw, "0.10.1", "df7a11bc1d23415dd48c7796a70a6ad98b9cf77554078d79115d6c6e58b87eda", [:make, :mix], [{:elixir_make, "~> 0.6", [hex: :elixir_make, repo: "hexpm", optional: false]}, {:scenic, "~> 0.10", [hex: :scenic, repo: "hexpm", optional: false]}], "hexpm"},
   "scenic_live_reload": {:git, "https://github.com/axelson/scenic_live_reload.git", "3258eaeadff233925d66bbfeae969e650a736768", []},
   "toml": {:hex, :toml, "0.5.2", "e471388a8726d1ce51a6b32f864b8228a1eb8edc907a0edf2bb50eab9321b526", [:mix], [], "hexpm"},
 }
