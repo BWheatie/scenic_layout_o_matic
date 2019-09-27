@@ -68,8 +68,8 @@ defmodule LayoutOMatic.Layouts.Primitives.Circle do
                 sized_x = grid_x + size + stroke_fill
                 new_layout =
                   layout
-                  |> Map.put(:grid_xy, {grid_x + size, new_y})
-                  |> Map.put(:starting_xy, {grid_x, new_y})
+                  |> Map.put(:grid_xy, {grid_x, new_y})
+                  |> Map.put(:starting_xy, {sized_x, new_y})
 
                 {:ok, {sized_x, new_y}, new_layout}
 
