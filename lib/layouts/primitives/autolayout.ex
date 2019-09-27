@@ -8,14 +8,14 @@ defmodule Scenic.Layouts.Primitives.AutoLayout do
   import Scenic.Primitives
 
   defmodule Layout do
-    defstruct component: %Scenic.Primitive{},
+    defstruct primitive: %Scenic.Primitive{},
               starting_xy: {},
               max_xy: {},
               grid_xy: {},
               graph: %{}
   end
 
-  def layout(graph, group_id, list_of_prim_ids) do
+  def auto_layout(graph, group_id, list_of_prim_ids) do
     rect_id =
       group_id
       |> Atom.to_string()
@@ -24,32 +24,30 @@ defmodule Scenic.Layouts.Primitives.AutoLayout do
       |> String.to_atom()
 
     [%{transforms: %{translate: grid_xy}}] = Graph.get(graph, group_id)
-    [%{data: max_xy}] = Graph.get(graph, rect_id) |> IO.inspect()
+    [%{data: max_xy}] = Graph.get(graph, rect_id)
 
     graph =
       Enum.reduce(list_of_prim_ids, [], fn p_id, acc ->
         [%{module: module} = primitive] = Graph.get(graph, p_id)
 
-        {starting_xy, graph} =
+        layout =
           case acc do
             [] ->
-              {grid_xy, graph}
+               %Layout{
+                 primitive: primitive,
+                 starting_xy: grid_xy,
+                 max_xy: max_xy,
+                 grid_xy: grid_xy,
+                 graph: graph
+               }
 
             _ ->
               acc
           end
 
-        layout = %Layout{
-          component: primitive,
-          starting_xy: starting_xy,
-          max_xy: max_xy,
-          grid_xy: grid_xy,
-          graph: graph
-        }
-
         do_layout(module, layout, p_id)
       end)
-      |> elem(1)
+      |> Map.get(:graph)
 
     {:ok, graph}
   end
@@ -57,15 +55,10 @@ defmodule Scenic.Layouts.Primitives.AutoLayout do
   defp do_layout(Scenic.Primitive.Arc, _layout, _p_id), do: nil
 
   defp do_layout(Scenic.Primitive.Circle, layout, p_id) do
-    case Circle.translate(
-           Map.get(layout, :primitive),
-           Map.get(layout, :max_xy),
-           Map.get(layout, :starting_xy),
-           Map.get(layout, :grid_xy)
-         ) do
-      {:ok, xy} ->
-        new_graph = Graph.modify(Map.get(layout, :graph), p_id, &update_opts(&1, t: xy))
-        {xy, new_graph}
+    case Circle.translate(layout) do
+      {:ok, xy, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), p_id, &update_opts(&1, t: xy))
+        Map.put(new_layout, :graph, new_graph)
 
       {:error, error} ->
         {:error, error}
