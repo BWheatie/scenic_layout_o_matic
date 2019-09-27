@@ -59,15 +59,16 @@ defmodule LayoutOMatic.Layouts.Primitives.Circle do
             # the grid_y(our original starting place)/diameter/size/stroke fill
             # diameter + size is because the circle translates by the center which means we
             # need diamter and radius in order for circles to not overlap
-            new_y = grid_y + diameter + size + stroke_fill
+            new_y = starting_y + diameter + stroke_fill
 
-            case fits_in_y?(new_y, max_xy) do
+            # need to do the same thing as x, check if the entire circle will fit
+            case fits_in_y?(new_y + size, max_xy) do
               # fits in new y, check x
               true ->
                 sized_x = grid_x + size + stroke_fill
                 new_layout =
                   layout
-                  |> Map.put(:grid_xy, {sized_x, new_y})
+                  |> Map.put(:grid_xy, {grid_x + size, new_y})
                   |> Map.put(:starting_xy, {grid_x, new_y})
 
                 {:ok, {sized_x, new_y}, new_layout}
