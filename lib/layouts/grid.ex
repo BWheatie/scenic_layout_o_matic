@@ -102,7 +102,7 @@ defmodule Scenic.Layouts.Grid do
       rect_spec({size, max_y},
         stroke: {1, :white},
         scissor: {size, max_y},
-        hidden: draw,
+        hidden: !draw,
         id: id
       ),
       id: String.to_atom(Atom.to_string(id) <> "_group"),
