@@ -13,8 +13,13 @@ defmodule LayoutOMatic.Layouts.Components.Button do
       ) do
     {_, text} = Map.get(component, :data)
 
-    %{width: requested_width, height: requested_height, button_font_size: font_size} =
-      Map.get(component, :styles)
+    %{height: requested_height, width: requested_width, button_font_size: font_size} =
+      case Map.get(component, :styles) do
+        map when map_size(map) == 3 ->
+          map
+        map when map_size(map) == 2 ->
+          Map.put(map, :button_font_size, @default_font_size)
+      end
 
     {starting_x, starting_y} = starting_xy
     {grid_x, grid_y} = grid_xy
@@ -23,9 +28,10 @@ defmodule LayoutOMatic.Layouts.Components.Button do
     width = get_width(requested_width, metrics)
 
     case starting_xy == grid_xy do
-      # if starting new group of primitives use the grid translate
+
       true ->
-        {:ok, {starting_x, starting_y}, {width, height}, layout}
+        layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
+        {:ok, {starting_x, starting_y}, layout}
 
       false ->
         # already in a new group, use starting_xy
@@ -36,7 +42,8 @@ defmodule LayoutOMatic.Layouts.Components.Button do
             case fits_in_y?(starting_y + height, max_xy) do
               true ->
                 # fits
-                {:ok, {starting_x, starting_y}, {width, height}, layout}
+                layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
+                {:ok, {starting_x, starting_y}, layout}
 
               # Does not fit
               false ->
@@ -51,8 +58,12 @@ defmodule LayoutOMatic.Layouts.Components.Button do
             case fits_in_y?(new_y, max_xy) do
               # fits in new y, check x
               true ->
-                layout = %{layout | grid_xy: {grid_x, new_y}}
-                {:ok, {grid_x, new_y}, {width, height}, layout}
+                new_layout =
+                  layout
+                  |> Map.put(:grid_xy, {grid_x, new_y})
+                  |> Map.put(:starting_xy, {width, new_y})
+
+                {:ok, {grid_x, new_y}, new_layout}
 
               false ->
                 {:error, "Does not fit in the grid"}
