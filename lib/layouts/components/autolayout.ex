@@ -33,35 +33,33 @@ defmodule Scenic.Layouts.Components.AutoLayout do
       Enum.reduce(list_of_comp_ids, [], fn c_id, acc ->
         [%{data: {comp_type, _}} = component] = Graph.get(graph, c_id)
 
-        {starting_xy, graph, %{}} =
+        layout =
           case acc do
             [] ->
-              {grid_xy, graph, %{}}
+              layout = %Layout{
+                        component: component,
+                        starting_xy: grid_xy,
+                        max_xy: max_xy,
+                        grid_xy: grid_xy,
+                        graph: graph
+                      }
 
             _ ->
               acc
           end
 
-        layout = %Layout{
-          component: component,
-          starting_xy: starting_xy,
-          max_xy: max_xy,
-          grid_xy: grid_xy,
-          graph: graph
-        }
-
         do_layout(comp_type, layout, c_id)
       end)
-      |> elem(1)
+      |> Map.get(:graph)
 
     {:ok, graph}
   end
 
   def do_layout(Scenic.Component.Button, layout, c_id) do
     case Button.translate(layout) do
-      {:ok, {x, y}, {w, _}, layout} ->
-        new_graph = Graph.modify(Map.get(layout, :graph), c_id, &update_opts(&1, t: {x, y}))
-        {{x + w, y}, new_graph, layout}
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
 
       {:error, error} ->
         {:error, error}
