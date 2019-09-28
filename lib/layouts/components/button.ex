@@ -17,6 +17,7 @@ defmodule LayoutOMatic.Layouts.Components.Button do
       case Map.get(component, :styles) do
         map when map_size(map) == 3 ->
           map
+
         map when map_size(map) == 2 ->
           Map.put(map, :button_font_size, @default_font_size)
       end
@@ -28,7 +29,6 @@ defmodule LayoutOMatic.Layouts.Components.Button do
     width = get_width(requested_width, metrics)
 
     case starting_xy == grid_xy do
-
       true ->
         layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
         {:ok, {starting_x, starting_y}, layout}

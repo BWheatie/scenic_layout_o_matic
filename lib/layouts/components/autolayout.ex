@@ -37,12 +37,12 @@ defmodule Scenic.Layouts.Components.AutoLayout do
           case acc do
             [] ->
               layout = %Layout{
-                        component: component,
-                        starting_xy: grid_xy,
-                        max_xy: max_xy,
-                        grid_xy: grid_xy,
-                        graph: graph
-                      }
+                component: component,
+                starting_xy: grid_xy,
+                max_xy: max_xy,
+                grid_xy: grid_xy,
+                graph: graph
+              }
 
             _ ->
               acc

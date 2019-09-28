@@ -66,6 +66,7 @@ defmodule LayoutOMatic.Layouts.Primitives.Circle do
               # fits in new y, check x
               true ->
                 sized_x = grid_x + size + stroke_fill
+
                 new_layout =
                   layout
                   |> Map.put(:grid_xy, {grid_x, new_y})

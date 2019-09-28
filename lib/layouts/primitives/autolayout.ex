@@ -33,13 +33,13 @@ defmodule Scenic.Layouts.Primitives.AutoLayout do
         layout =
           case acc do
             [] ->
-               %Layout{
-                 primitive: primitive,
-                 starting_xy: grid_xy,
-                 max_xy: max_xy,
-                 grid_xy: grid_xy,
-                 graph: graph
-               }
+              %Layout{
+                primitive: primitive,
+                starting_xy: grid_xy,
+                max_xy: max_xy,
+                grid_xy: grid_xy,
+                graph: graph
+              }
 
             _ ->
               acc
