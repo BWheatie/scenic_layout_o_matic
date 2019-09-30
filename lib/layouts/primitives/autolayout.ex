@@ -77,15 +77,14 @@ defmodule Scenic.Layouts.Primitives.AutoLayout do
   end
 
   defp do_layout(Scenic.Primitive.RoundedRectangle, layout, p_id) do
-    # case RoundedRectangle.translate(layout) do
-    #   {:ok, xy, new_layout} ->
-    #     new_graph = Graph.modify(Map.get(new_layout, :graph), p_id, &update_opts(&1, t: xy))
-    #     Map.put(new_layout, :graph, new_graph)
+    case RoundedRectangle.translate(layout) do
+      {:ok, xy, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), p_id, &update_opts(&1, t: xy))
+        Map.put(new_layout, :graph, new_graph)
 
-    #   {:error, error} ->
-    #     {:error, error}
-    # end
-    nil
+      {:error, error} ->
+        {:error, error}
+    end
   end
 
   defp do_layout(Scenic.Primitive.Line, _layout, _p_id), do: nil
