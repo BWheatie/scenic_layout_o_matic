@@ -1,6 +1,7 @@
 defmodule Scenic.Layouts.Components.AutoLayout do
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Components.Button
+  alias LayoutOMatic.Layouts.Components.Checkbox
   # alias LayoutOMatic.Layouts.Components.Slider
 
   import Scenic.Primitives
@@ -55,7 +56,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     {:ok, graph}
   end
 
-  def do_layout(Scenic.Component.Button, layout, c_id) do
+  defp do_layout(Scenic.Component.Button, layout, c_id) do
     case Button.translate(layout) do
       {:ok, {x, y}, new_layout} ->
         new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
@@ -66,23 +67,21 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     end
   end
 
-  def do_layout(Scenic.Component.Checkbox, _, _) do
-    nil
-    ## TODO: First determine if there is text: if there is,
-    # case Checkbox.translate(component, max_xy, starting_xy, grid_xy) do
-    #   {:ok, {x, y}, {w, h}} ->
-    #     new_graph = Graph.modify(graph, c_id, &update_opts(&1, t: {x, y}))
-    #     {{x + w, y}, new_graph}
+  defp do_layout(Scenic.Component.Input.Checkbox, layout, c_id) do
+    case Checkbox.translate(layout) do
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
 
-    #   {:error, error} ->
-    #     {:error, error}
-    # end
+      {:error, error} ->
+        {:error, error}
+    end
   end
 
-  def do_layout(Scenic.Component.Dropdown, _, _), do: nil
-  def do_layout(Scenic.Component.RadioGroup, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.Dropdown, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.RadioGroup, _, _), do: nil
 
-  def do_layout(Scenic.Component.Slider, _, _) do
+  defp do_layout(Scenic.Component.Input.Slider, _, _) do
     nil
     # case Slider.translate(component, max_xy, starting_xy, grid_xy) do
     #   {:ok, {x, y}, {w, h}} ->
@@ -94,6 +93,6 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     # end
   end
 
-  def do_layout(Scenic.Component.TextField, _, _), do: nil
-  def do_layout(Scenic.Component.Toggle, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.TextField, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.Toggle, _, _), do: nil
 end
