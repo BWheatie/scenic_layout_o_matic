@@ -1,26 +1,44 @@
 defmodule LayoutOMatic.Layouts.Primitives.Rectangle do
+  @default_stroke {1, :white}
   # A circles size int is the radius and the translate is based on the center
   def translate(
-        %{data: {width, height}, styles: %{stroke: stroke}},
-        max_xy,
-        {starting_x, starting_y} = starting_xy,
-        {grid_x, grid_y} = grid_xy
+        %{
+          primitive: primitive,
+          starting_xy: starting_xy,
+          max_xy: max_xy,
+          grid_xy: grid_xy
+        } = layout
       ) do
+    %{data: {width, height}} = primitive
+    {grid_x, grid_y} = grid_xy
+    {starting_x, starting_y} = starting_xy
+
+    stroke_fill =
+      case Map.get(primitive, :styles) do
+        nil ->
+          elem(@default_stroke, 0)
+
+        styles when is_map(styles) ->
+          %{stroke: stroke} = styles
+          elem(stroke, 0)
+      end
+
     case starting_xy == grid_xy do
-      # if starting new group of primitives use the grid translate
       true ->
-        {:ok, {starting_x + elem(stroke, 0), starting_y + elem(stroke, 0)}}
+        layout = Map.put(layout, :starting_xy, {starting_x + width + stroke_fill, starting_y + stroke_fill})
+        {:ok, {starting_x + stroke_fill, starting_y + stroke_fill}, layout}
 
       false ->
         # already in a new group, use starting_xy
-        case fits_in_x?(starting_x + elem(stroke, 0) + width, max_xy) do
+        case fits_in_x?(starting_x + width + stroke_fill, max_xy) do
           # fits in x
           true ->
             # fit in y?
-            case fits_in_y?(starting_y + height + elem(stroke, 0), max_xy) do
+            case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
-                {:ok, {starting_x + width + elem(stroke, 0), starting_y}}
+                layout = Map.put(layout, :starting_xy, {starting_x + width + stroke_fill, starting_y})
+                {:ok, {starting_x, starting_y}, layout}
 
               # Does not fit
               false ->
@@ -30,13 +48,16 @@ defmodule LayoutOMatic.Layouts.Primitives.Rectangle do
           # doesnt fit in x
           false ->
             # fit in new y?
-            new_y = grid_y + height + elem(stroke, 0)
+            new_y = grid_y + height  + stroke_fill
 
             case fits_in_y?(new_y, max_xy) do
-              # fits in new y, check x
               true ->
-                grid_x = grid_x + elem(stroke, 0)
-                {:ok, {grid_x, new_y}}
+                new_layout =
+                  layout
+                  |> Map.put(:grid_xy, {grid_x, new_y})
+                  |> Map.put(:starting_xy, {width + stroke_fill, new_y})
+
+                {:ok, {grid_x + stroke_fill, new_y}, new_layout}
 
               false ->
                 {:error, "Does not fit in the grid"}
