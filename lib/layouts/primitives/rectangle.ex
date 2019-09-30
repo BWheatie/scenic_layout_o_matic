@@ -25,7 +25,13 @@ defmodule LayoutOMatic.Layouts.Primitives.Rectangle do
 
     case starting_xy == grid_xy do
       true ->
-        layout = Map.put(layout, :starting_xy, {starting_x + width + stroke_fill, starting_y + stroke_fill})
+        layout =
+          Map.put(
+            layout,
+            :starting_xy,
+            {starting_x + width + stroke_fill, starting_y + stroke_fill}
+          )
+
         {:ok, {starting_x + stroke_fill, starting_y + stroke_fill}, layout}
 
       false ->
@@ -37,7 +43,9 @@ defmodule LayoutOMatic.Layouts.Primitives.Rectangle do
             case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
-                layout = Map.put(layout, :starting_xy, {starting_x + width + stroke_fill, starting_y})
+                layout =
+                  Map.put(layout, :starting_xy, {starting_x + width + stroke_fill, starting_y})
+
                 {:ok, {starting_x, starting_y}, layout}
 
               # Does not fit
@@ -48,7 +56,7 @@ defmodule LayoutOMatic.Layouts.Primitives.Rectangle do
           # doesnt fit in x
           false ->
             # fit in new y?
-            new_y = grid_y + height  + stroke_fill
+            new_y = grid_y + height + stroke_fill
 
             case fits_in_y?(new_y, max_xy) do
               true ->
