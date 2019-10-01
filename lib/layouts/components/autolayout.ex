@@ -2,6 +2,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Components.Button
   alias LayoutOMatic.Layouts.Components.Checkbox
+  alias LayoutOMatic.Layouts.Components.Dropdown
   # alias LayoutOMatic.Layouts.Components.Slider
 
   import Scenic.Primitives
@@ -37,7 +38,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
         layout =
           case acc do
             [] ->
-              layout = %Layout{
+              %Layout{
                 component: component,
                 starting_xy: grid_xy,
                 max_xy: max_xy,
@@ -78,7 +79,17 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     end
   end
 
-  defp do_layout(Scenic.Component.Input.Dropdown, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.Dropdown, layout, c_id) do
+    case Dropdown.translate(layout) do
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
+
   defp do_layout(Scenic.Component.Input.RadioGroup, _, _), do: nil
 
   defp do_layout(Scenic.Component.Input.Slider, _, _) do
