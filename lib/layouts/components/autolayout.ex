@@ -5,6 +5,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
   alias LayoutOMatic.Layouts.Components.Checkbox
   alias LayoutOMatic.Layouts.Components.Dropdown
   alias LayoutOMatic.Layouts.Components.Slider
+  alias LayoutOMatic.Layouts.Components.TextField
 
   import Scenic.Primitives
 
@@ -91,7 +92,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     end
   end
 
-  defp do_layout(Scenic.Component.Input.RadioGroup, layout, c_id) do
+  defp do_layout(Scenic.Component.Input.RadioGroup, _layout, _c_id) do
     # case RadioGroup.translate(layout) do
     #   {:ok, {x, y}, new_layout} ->
     #     new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
@@ -113,6 +114,15 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     end
   end
 
-  defp do_layout(Scenic.Component.Input.TextField, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.TextField, layout, c_id) do
+    case TextField.translate(layout) do
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
   defp do_layout(Scenic.Component.Input.Toggle, _, _), do: nil
 end
