@@ -50,8 +50,16 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
 
     case starting_xy == grid_xy do
       true ->
+        xy =
+          case drop_direction do
+            :down ->
+              {starting_x, starting_y}
+
+            :up ->
+              {starting_x, starting_y + drop_height}
+          end
         layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
-        {:ok, {starting_x, starting_y}, layout}
+        {:ok, xy, layout}
 
       false ->
         # already in a new group, use starting_xy
@@ -62,8 +70,16 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
             case fits_in_y?(starting_y + height + drop_height, max_xy) do
               true ->
                 # fits
+                xy =
+                  case drop_direction do
+                    :down ->
+                      {starting_x, starting_y}
+
+                    :up ->
+                      {starting_x, starting_y + drop_height}
+                  end
                 layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
-                {:ok, {starting_x, starting_y}, layout}
+                {:ok, xy, layout}
 
               # Does not fit
               false ->
@@ -73,7 +89,13 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
           # doesnt fit in x
           false ->
             # fit in new y?
-            new_y = grid_y + height + drop_height
+            new_y =
+              case drop_direction do
+                :down ->
+                  grid_y + height + drop_height
+                :up ->
+                  grid_y + height + drop_height * 2
+              end
 
             case fits_in_y?(new_y, max_xy) do
               # fits in new y, check x
