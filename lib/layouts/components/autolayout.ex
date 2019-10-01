@@ -1,9 +1,10 @@
 defmodule Scenic.Layouts.Components.AutoLayout do
   alias Scenic.Graph
+  # alias LayoutOMatic.Layouts.Components.RadioGroup
   alias LayoutOMatic.Layouts.Components.Button
   alias LayoutOMatic.Layouts.Components.Checkbox
   alias LayoutOMatic.Layouts.Components.Dropdown
-  # alias LayoutOMatic.Layouts.Components.Slider
+  alias LayoutOMatic.Layouts.Components.Slider
 
   import Scenic.Primitives
 
@@ -90,18 +91,26 @@ defmodule Scenic.Layouts.Components.AutoLayout do
     end
   end
 
-  defp do_layout(Scenic.Component.Input.RadioGroup, _, _), do: nil
-
-  defp do_layout(Scenic.Component.Input.Slider, _, _) do
-    nil
-    # case Slider.translate(component, max_xy, starting_xy, grid_xy) do
-    #   {:ok, {x, y}, {w, h}} ->
-    #     new_graph = Graph.modify(graph, c_id, &update_opts(&1, t: {x, y}))
-    #     {{x + w, y}, new_graph}
+  defp do_layout(Scenic.Component.Input.RadioGroup, layout, c_id) do
+    # case RadioGroup.translate(layout) do
+    #   {:ok, {x, y}, new_layout} ->
+    #     new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+    #     Map.put(new_layout, :graph, new_graph)
 
     #   {:error, error} ->
     #     {:error, error}
     # end
+  end
+
+  defp do_layout(Scenic.Component.Input.Slider, layout, c_id) do
+    case Slider.translate(layout) do
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
+
+      {:error, error} ->
+        {:error, error}
+    end
   end
 
   defp do_layout(Scenic.Component.Input.TextField, _, _), do: nil

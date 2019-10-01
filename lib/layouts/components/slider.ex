@@ -1,7 +1,6 @@
 defmodule LayoutOMatic.Layouts.Components.Slider do
   # Buttons size based on :button_font_size with 20 being the default; width/height override
-  @default_font_size 20
-  @default_font :roboto
+  @default_width 300
 
   def translate(
         %{
@@ -11,21 +10,23 @@ defmodule LayoutOMatic.Layouts.Components.Slider do
           max_xy: max_xy
         } = layout
       ) do
-    {_, text} = Map.get(component, :data)
-
-    %{width: requested_width, height: requested_height, button_font_size: font_size} =
-      Map.get(component, :styles)
 
     {starting_x, starting_y} = starting_xy
     {grid_x, grid_y} = grid_xy
-    metrics = get_font_metrics(text, font_size)
-    height = get_height(requested_height, metrics)
-    width = get_width(requested_width, metrics)
+
+    height = 18
+    width = Map.get(component, :styles, @default_width)
 
     case starting_xy == grid_xy do
-      # if starting new group of primitives use the grid translate
       true ->
-        {:ok, {starting_x, starting_y}, {width, height}, layout}
+        layout =
+          Map.put(
+            layout,
+            :starting_xy,
+            {starting_x + width, starting_y}
+          )
+
+        {:ok, {starting_x + 3, starting_y + 2}, layout}
 
       false ->
         # already in a new group, use starting_xy
@@ -33,10 +34,13 @@ defmodule LayoutOMatic.Layouts.Components.Slider do
           # fits in x
           true ->
             # fit in y?
-            case fits_in_y?(starting_y + height, max_xy) do
+            case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
-                {:ok, {starting_x, starting_y}, {width, height}, layout}
+                layout =
+                  Map.put(layout, :starting_xy, {starting_x + width, starting_y})
+
+                {:ok, {starting_x + 3, starting_y + 2}, layout}
 
               # Does not fit
               false ->
@@ -49,50 +53,19 @@ defmodule LayoutOMatic.Layouts.Components.Slider do
             new_y = grid_y + height
 
             case fits_in_y?(new_y, max_xy) do
-              # fits in new y, check x
               true ->
-                layout = %{layout | grid_xy: {grid_x, new_y}}
-                {:ok, {grid_x, new_y}, {width, height}, layout}
+                new_layout =
+                  layout
+                  |> Map.put(:grid_xy, {grid_x, new_y})
+                  |> Map.put(:starting_xy, {width, new_y})
+
+                {:ok, {grid_x + 3, new_y + 2}, new_layout}
 
               false ->
                 {:error, "Does not fit in the grid"}
             end
         end
     end
-  end
-
-  defp get_width(width, %{fm_width: fm_width, ascent: ascent}) do
-    case width do
-      nil -> fm_width + ascent + ascent
-      :auto -> fm_width + ascent + ascent
-      width when is_number(width) and width > 0 -> width
-    end
-  end
-
-  defp get_height(height, %{font_size: font_size, ascent: ascent}) do
-    case height do
-      nil -> font_size + ascent
-      :auto -> font_size + ascent
-      height when is_number(height) and height > 0 -> height
-    end
-  end
-
-  def get_font_metrics(text, font_size) do
-    fm = Scenic.Cache.Static.FontMetrics.get!(@default_font)
-    ascent = FontMetrics.ascent(@default_font_size, fm)
-    fm_width = FontMetrics.width(text, @default_font_size, fm)
-    space_width = FontMetrics.width(' ', @default_font_size, fm)
-    box_width = fm_width + ascent + space_width * 2
-    box_height = trunc(ascent) + 1
-
-    %{
-      font_size: font_size,
-      ascent: ascent,
-      fm_width: fm_width,
-      space_width: space_width,
-      box_width: box_width,
-      box_height: box_height
-    }
   end
 
   def fits_in_x?(potential_x, {max_x, _}),
