@@ -2,6 +2,9 @@
 
 The Layout-O-Matic slices and dices your viewport in 2 easy steps. With the Layout-O-Matic getting web-like layouts is such a breeze.
 
+Layout Engine for [Scenic Framework](https://github.com/boydm/scenic)
+([documentation](http://hexdocs.pm/scenic_layout_o_matic/)).
+
 ## Installation
 
 ```elixir
