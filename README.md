@@ -8,7 +8,7 @@ Layout Engine for [Scenic Framework](https://github.com/boydm/scenic)
 ## Installation
 
 ```elixir
-{:scenic_layout_o_matic, git: "https://github.com/BWheatie/layout_o_matic", tag: "0.1.0"}
+{:scenic_layout_o_matic, "0.1.0"}
 ```
 
 ## Usage
