@@ -63,6 +63,13 @@ end
 
 Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
 
+## Supported Primitives
+* Circle
+* Rectangle
+* RoundedRectangle
+
+## Supported Components
+All but RadioGroups. Still need to figure those out.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
