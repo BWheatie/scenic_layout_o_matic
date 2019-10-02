@@ -1,4 +1,9 @@
 defmodule Scenic.Layouts.Components.AutoLayout do
+  @moduledoc """
+  Handles Auto-Layouts for Scenic Components.
+
+
+  """
   alias Scenic.Graph
   # alias LayoutOMatic.Layouts.Components.RadioGroup
   alias LayoutOMatic.Layouts.Components.Button
@@ -94,6 +99,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
   end
 
   defp do_layout(Scenic.Component.Input.RadioGroup, _layout, _c_id) do
+    nil
     # case RadioGroup.translate(layout) do
     #   {:ok, {x, y}, new_layout} ->
     #     new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))

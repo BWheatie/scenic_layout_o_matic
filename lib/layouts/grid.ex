@@ -11,15 +11,15 @@ defmodule Scenic.Layouts.Grid do
 
   ## Data
   * `:viewport` - The viewport struct you want a grid drawn to.
-  * `:grid_template` - The type and size of columns for the grid.
+  * `:grid_template` - The type and size of columns for the grid. *Required field*.
     * `{:equal, number_of_equal_columns}` - Indicates columns will be equally sized and how many of them to be drawn
     * `{:percentage, percentage_of_viewport}` - Indicates columns will be a percentage of the viewport and what percentage of the viewport. This option is a list of percentages which cannot exceed 100%.
     * `{:relative, percentage_relative_to_object}` - Indicates columns will be drawn relative to another object. This could be used to draw a grid relative to another primitive of component as well as another grid.
-  * `:max_xy` - The maximum {x,y} the grid should fit into. This will likely be the viewport size in an inital graph.
-  * `:starting_xy` - The {x,y} the grid should start at. In an inital grid it will be {0,0}.
-  * `:grid_ids` - The ids used for each segment of the grid in order to recall the segment later in order to assign a list of objects to it for layouts. Symantically named ids is recommneded.
+  * `:max_xy` - The maximum {x,y} the grid should fit into. This will likely be the viewport size in an inital graph. Default `{700, 600}`. This is the default viewport size for a new scenic app.
+  * `:starting_xy` - The {x,y} the grid should start at. Default is {0, 0}.
+  * `:grid_ids` - The ids used for each segment of the grid in order to recall the segment later in order to assign a list of objects to it for layouts. Symantically named ids is recommneded. *Required field*
   * `:opts` - A list of additional options
-    * `:draw` - Boolean to determine if the grid should be drawn or not. Useful for making sure objects are falling where expected.
+    * `:draw` - Boolean to determine if the grid should be drawn or not. Useful for making sure objects are falling where expected. Default is `false`.
 
   ```
   @viewport :scenic_layout_o_matic
@@ -88,7 +88,7 @@ defmodule Scenic.Layouts.Grid do
     |> get_x_coordinates()
   end
 
-  @moduledoc false
+  @doc false
   defp get_x_coordinates(grid) do
     ids_and_sizes = Enum.zip(Map.get(grid, :grid_ids), Map.get(grid, :column_sizes))
     opts = Map.get(grid, :opts)
@@ -110,7 +110,7 @@ defmodule Scenic.Layouts.Grid do
     |> elem(0)
   end
 
-  @moduledoc false
+  @doc false
   defp build_grid(max_y, size, starting_xy, id, draw) do
     group_spec(
       rect_spec({size, max_y},
