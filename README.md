@@ -1,6 +1,6 @@
 # Layout-O-Matic
 
-The Layout-O-Matic slices and dices your viewport in 2 easy steps. With the Layout-O-Matic getting web-like layouts is such a breeze. 
+The Layout-O-Matic slices and dices your viewport in 2 easy steps. With the Layout-O-Matic getting web-like layouts is such a breeze.
 
 ## Installation
 
@@ -9,34 +9,57 @@ The Layout-O-Matic slices and dices your viewport in 2 easy steps. With the Layo
 ```
 
 ## Usage
-Currently there are two different grid types: equal sized grids and percentage sized grids. The only difference is the key passed to `Layout.grid()/1`.
-For equally sized columns you would use `number_of_columns` which takes and `int`. For columns a percentage of the viewport you would use `percentages_of_viewport_x`. Using either key will generate a `group_spec` with `id: <GRID_ID>_group` and a `rect_spec` with `id: <GRID_ID>`. This will make adding new primitives/components to your grid simple by using `Graph.modify/3` passing in either the `group` id or `rect` id depending on what you need. The `rect` has a scissor set for the `{x, y}` of the primitive meaning anything rendered outside of that rect will be scissored. 
-### Example
+
 ```elixir
 defmodule MyApp.Scene.Home do
   use Scenic.Scene
-  
+
+  alias Scenic.Graph
+  alias Scenic.Layouts.Grid
+  alias Scenic.Layouts.Grid.GridBuilder
+  alias Scenic.Layouts.Components.AutoLayout, as: Component
+
+  import Scenic.Components
+
+
   @viewport :layout_o_matic
             |> Application.get_env(:viewport)
             |> Map.get(:size)
 
-  @grid %Grid{
-    percentage_layout: [25, 25, 50],
+  @grid %GridBuilder{
+    grid_template: [{:equal, 2}],
     max_xy: @viewport,
-    grid_ids: [:left, :center, :right],
-    starting_xy: {0, 0}
-   }
+    grid_ids: [:left, :right],
+    starting_xy: {0, 0},
+    opts: [draw: true]
+  }
 
   @graph Graph.build()
-         |> add_specs_to_graph(Layout.grid(@grid),
+         |> add_specs_to_graph(Grid.grid(@grid),
            id: :root_grid
          )
 
   def init(_, opts) do
-    {:ok, opts, push: @graph}
+    list = [
+      :this_toggle,
+      :that_toggle,
+      :other_toggle,
+      :another_toggle
+    ]
+
+    graph =
+      Enum.reduce(list, @graph, fn id, acc ->
+        acc |> toggle(false, id: id)
+      end)
+
+    {:ok, new_graph} = Component.auto_layout(graph, :left_group, list)
+    {:ok, opts, push: new_graph}
   end
 end
 ```
+
+Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
