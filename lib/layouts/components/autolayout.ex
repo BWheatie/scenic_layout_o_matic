@@ -6,6 +6,7 @@ defmodule Scenic.Layouts.Components.AutoLayout do
   alias LayoutOMatic.Layouts.Components.Dropdown
   alias LayoutOMatic.Layouts.Components.Slider
   alias LayoutOMatic.Layouts.Components.TextField
+  alias LayoutOMatic.Layouts.Components.Toggle
 
   import Scenic.Primitives
 
@@ -124,5 +125,14 @@ defmodule Scenic.Layouts.Components.AutoLayout do
         {:error, error}
     end
   end
-  defp do_layout(Scenic.Component.Input.Toggle, _, _), do: nil
+  defp do_layout(Scenic.Component.Input.Toggle, layout, c_id) do
+    case Toggle.translate(layout) do
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
 end
