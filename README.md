@@ -18,9 +18,9 @@ defmodule MyApp.Scene.Home do
   use Scenic.Scene
 
   alias Scenic.Graph
-  alias Scenic.Layouts.Grid
-  alias Scenic.Layouts.Grid.GridBuilder
-  alias Scenic.Layouts.Components.AutoLayout, as: Component
+  alias LayoutOMatic.Layouts.Grid
+  alias LayoutOMatic.Layouts.Grid.GridBuilder
+  alias LayoutOMatic.Layouts.Components.AutoLayout, as: Component
 
   import Scenic.Components
 

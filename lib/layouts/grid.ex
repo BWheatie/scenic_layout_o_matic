@@ -1,4 +1,4 @@
-defmodule Scenic.Layouts.Grid do
+defmodule LayoutOMatic.Layouts.Grid do
   import Scenic.Primitives
 
   @moduledoc """
