@@ -71,6 +71,8 @@ Simply replace your list of ids and the component or primitive you want generate
 ## Supported Components
 All but RadioGroups. Still need to figure those out.
 
+## Transforms
+Currently if an object is rotated, the Layout-O-Matic will not respect that as it will likely impact the size of the object.
 
 ## Motivation
 Scenic is a very exciting framework for the Elixir community especially for embedded applications. The motivation for this project is not to bring the web to Scenic but rather to bring some of the familiar layout apis to Scenic. When I started a project I was quickly frustrated in dynamically placing buttons in a view. This library is to bring some familiar tooling for layouts to Scenic.

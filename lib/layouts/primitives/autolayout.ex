@@ -1,4 +1,4 @@
-defmodule Scenic.Layouts.Primitives.AutoLayout do
+defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Primitives.Circle
   alias LayoutOMatic.Layouts.Primitives.Rectangle

@@ -1,4 +1,4 @@
-defmodule Scenic.Layouts.Components.AutoLayout do
+defmodule LayoutOMatic.Layouts.Components.AutoLayout do
   @moduledoc """
   Handles Auto-Layouts for Scenic Components.
 
