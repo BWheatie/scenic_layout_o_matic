@@ -78,6 +78,6 @@ Currently if an object is rotated, the Layout-O-Matic will not respect that as i
 Scenic is a very exciting framework for the Elixir community especially for embedded applications. The motivation for this project is not to bring the web to Scenic but rather to bring some of the familiar layout apis to Scenic. When I started a project I was quickly frustrated in dynamically placing buttons in a view. This library is to bring some familiar tooling for layouts to Scenic.
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. If there is a CSS-like property you believe would be a useful addition please first use the library to make sure it isn't already possible. After, open an issue to discuss it's purpose and why it would be valueable for Scenic development. As Scenic is not for web development, ideally this library would only include the most valuable tools to build great applications.
 
 Please make sure to update tests as appropriate.
