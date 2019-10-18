@@ -23,7 +23,9 @@ defmodule MyApp.Scene.Home do
 
   import Scenic.Components
 
-  {:ok, %ViewPort.Status{size: {width, height}}} = ViewPort.info(opts[:viewport])
+  @viewport :my_app
+            |> Application.get_env(:viewport)
+            |> Map.get(:size)
 
   @grid %{
     grid_template: [{:equal, 2}],
