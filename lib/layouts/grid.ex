@@ -60,7 +60,8 @@ defmodule LayoutOMatic.Layouts.Grid do
               opts: [draw: false]
   end
 
-  def grid(%GridBuilder{} = grid) do
+  def grid(%{} = grid) do
+    struct(GridBuilder, grid)
     {starting_x, _} = Map.get(grid, :starting_xy)
     {max_x, _} = Map.get(grid, :max_xy)
 
