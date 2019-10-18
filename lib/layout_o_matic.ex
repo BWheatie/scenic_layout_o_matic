@@ -9,7 +9,7 @@ defmodule LayoutOMatic do
 
     # start the application with the viewport
     children = [
-      {Scenic, viewports: [main_viewport_config]}
+      {DynamicSupervisor, name: LayoutOMatic, strategy: :one_for_one},
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one)
