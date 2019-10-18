@@ -19,17 +19,13 @@ defmodule MyApp.Scene.Home do
 
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Grid
-  alias LayoutOMatic.Layouts.Grid.GridBuilder
   alias LayoutOMatic.Layouts.Components.AutoLayout, as: Component
 
   import Scenic.Components
 
+  {:ok, %ViewPort.Status{size: {width, height}}} = ViewPort.info(opts[:viewport])
 
-  @viewport :layout_o_matic
-            |> Application.get_env(:viewport)
-            |> Map.get(:size)
-
-  @grid %GridBuilder{
+  @grid %{
     grid_template: [{:equal, 2}],
     max_xy: @viewport,
     grid_ids: [:left, :right],
@@ -60,8 +56,7 @@ defmodule MyApp.Scene.Home do
   end
 end
 ```
-
-Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
+`Component.auto_layout/3` and `Primitive.auto_layout/3` are the two functions you will use. They each take a graph, the `group_id` you want to apply the objects to, and a list of ids(which can be used later to easily access those objects). Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
 
 ## Supported Primitives
 * Circle
