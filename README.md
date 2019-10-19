@@ -19,12 +19,9 @@ defmodule MyApp.Scene.Home do
 
   alias Scenic.Graph
   alias LayoutOMatic.Layouts.Grid
-  alias LayoutOMatic.Layouts.Components.AutoLayout, as: Component
+  alias LayoutOMatic.Layouts.Components.AutoLayout
 
-  import Scenic.Components
-
-  @viewport :my_app
-            |> Application.get_env(:viewport)
+  @viewport Application.get_env(:my_app, :viewport)
             |> Map.get(:size)
 
   @grid %{
@@ -36,12 +33,12 @@ defmodule MyApp.Scene.Home do
   }
 
   @graph Graph.build()
-         |> add_specs_to_graph(Grid.grid(@grid),
+         |> Scenic.Primitives.add_specs_to_graph(Grid.grid(@grid),
            id: :root_grid
          )
 
   def init(_, opts) do
-    list = [
+    id_list = [
       :this_toggle,
       :that_toggle,
       :other_toggle,
@@ -49,16 +46,17 @@ defmodule MyApp.Scene.Home do
     ]
 
     graph =
-      Enum.reduce(list, @graph, fn id, acc ->
-        acc |> toggle(false, id: id)
+      Enum.reduce(id_list, @graph, fn id, graph ->
+        graph
+        |> Scenic.Components.toggle(false, id: id)
       end)
 
-    {:ok, new_graph} = Component.auto_layout(graph, :left_group, list)
+    {:ok, new_graph} = AutoLayout.auto_layout(graph, :left_group, id_list)
     {:ok, opts, push: new_graph}
   end
 end
 ```
-`Component.auto_layout/3` and `Primitive.auto_layout/3` are the two functions you will use. They each take a graph, the `group_id` you want to apply the objects to, and a list of ids(which can be used later to easily access those objects). Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
+`AutoLayout.auto_layout/3` and `Primitive.auto_layout/3` are the two functions you will use. They each take a graph, the `group_id` you want to apply the objects to, and a list of ids(which can be used later to easily access those objects). Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
 
 ## Supported Primitives
 * Circle
