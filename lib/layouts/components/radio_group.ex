@@ -43,6 +43,7 @@ defmodule LayoutOMatic.Layouts.Components.RadioGroup do
       false ->
         # already in a new group, use starting_xy
         x = starting_x + box_width + space_width + outer_radius
+
         case fits_in_x?(x, max_xy) do
           # fits in x
           true ->
