@@ -59,7 +59,7 @@ end
 `AutoLayout.auto_layout/3` and `Primitive.auto_layout/3` are the two functions you will use. They each take a graph, the `group_id` you want to apply the objects to, and a list of ids(which can be used later to easily access those objects). Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
 
 ## Walkthrough
-A more thorough [walkthrough](./doc/walkthrough.md) is available.
+A more thorough [walkthrough](./walkthrough.md) is available.
 
 ## Supported Primitives
 * Circle
