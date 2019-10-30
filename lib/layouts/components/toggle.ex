@@ -12,7 +12,6 @@ defmodule LayoutOMatic.Layouts.Components.Toggle do
           max_xy: max_xy
         } = layout
       ) do
-
     {starting_x, starting_y} = starting_xy
     {grid_x, grid_y} = grid_xy
     styles = Map.get(component, :styles, %{})
@@ -45,8 +44,7 @@ defmodule LayoutOMatic.Layouts.Components.Toggle do
             case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
-                layout =
-                  Map.put(layout, :starting_xy, {starting_x + track_width + 3, starting_y})
+                layout = Map.put(layout, :starting_xy, {starting_x + track_width + 3, starting_y})
 
                 {:ok, {starting_x, starting_y + track_height}, layout}
 

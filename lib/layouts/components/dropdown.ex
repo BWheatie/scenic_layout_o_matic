@@ -12,7 +12,6 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
           max_xy: max_xy
         } = layout
       ) do
-
     {_, {items, _}} = Map.get(component, :data)
     {starting_x, starting_y} = starting_xy
     {grid_x, grid_y} = grid_xy
@@ -38,10 +37,10 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
 
     height =
       case Map.get(styles, :height) do
-      nil -> font_size + ascent
-      :auto -> font_size + ascent
-      height when is_number(height) and height > 0 -> height
-    end
+        nil -> font_size + ascent
+        :auto -> font_size + ascent
+        height when is_number(height) and height > 0 -> height
+      end
 
     # calculate the drop box measures
     item_count = Enum.count(items)
@@ -58,6 +57,7 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
             :up ->
               {starting_x, starting_y + drop_height}
           end
+
         layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
         {:ok, xy, layout}
 
@@ -78,6 +78,7 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
                     :up ->
                       {starting_x, starting_y + drop_height}
                   end
+
                 layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
                 {:ok, xy, layout}
 
@@ -93,6 +94,7 @@ defmodule LayoutOMatic.Layouts.Components.Dropdown do
               case drop_direction do
                 :down ->
                   grid_y + height + drop_height
+
                 :up ->
                   grid_y + height + drop_height * 2
               end

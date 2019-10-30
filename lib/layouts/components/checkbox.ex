@@ -25,7 +25,13 @@ defmodule LayoutOMatic.Layouts.Components.Checkbox do
 
     case starting_xy == grid_xy do
       true ->
-        layout = Map.put(layout, :starting_xy, {starting_x + box_width + space_width * 2, starting_y + box_height})
+        layout =
+          Map.put(
+            layout,
+            :starting_xy,
+            {starting_x + box_width + space_width * 2, starting_y + box_height}
+          )
+
         {:ok, {trunc(starting_x + space_width), starting_y + box_height}, layout}
 
       false ->
@@ -37,7 +43,13 @@ defmodule LayoutOMatic.Layouts.Components.Checkbox do
             case fits_in_y?(starting_y + box_height + ascent, max_xy) do
               true ->
                 # fits
-                layout = Map.put(layout, :starting_xy, {starting_x + box_width + space_width, starting_y})
+                layout =
+                  Map.put(
+                    layout,
+                    :starting_xy,
+                    {starting_x + box_width + space_width, starting_y}
+                  )
+
                 {:ok, {trunc(starting_x), starting_y}, layout}
 
               # Does not fit

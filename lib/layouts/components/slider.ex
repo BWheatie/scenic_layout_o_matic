@@ -10,7 +10,6 @@ defmodule LayoutOMatic.Layouts.Components.Slider do
           max_xy: max_xy
         } = layout
       ) do
-
     {starting_x, starting_y} = starting_xy
     {grid_x, grid_y} = grid_xy
 
@@ -37,8 +36,7 @@ defmodule LayoutOMatic.Layouts.Components.Slider do
             case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
-                layout =
-                  Map.put(layout, :starting_xy, {starting_x + width, starting_y})
+                layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
 
                 {:ok, {starting_x + 3, starting_y + 2}, layout}
 
