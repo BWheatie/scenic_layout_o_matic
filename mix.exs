@@ -29,7 +29,7 @@ defmodule LayoutOMatic.MixProject do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:scenic, "~> 0.10"},
-      {:scenic_driver_glfw, "~> 0.10"},
+      {:scenic_driver_glfw, "~> 0.10", targets: :host},
       {:font_metrics, "~> 0.3"}
     ]
   end
