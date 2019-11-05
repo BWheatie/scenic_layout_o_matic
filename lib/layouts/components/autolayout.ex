@@ -9,7 +9,6 @@ defmodule LayoutOMatic.Layouts.Components.AutoLayout do
   Auto-Layout, while a made up term, is used to describe that components will be automatically laid out by positioning components in equal rows and columns. Possibly in the future there may be other
   types of layouts.
 
-
   """
   alias Scenic.Graph
   # alias LayoutOMatic.Layouts.Components.RadioGroup
