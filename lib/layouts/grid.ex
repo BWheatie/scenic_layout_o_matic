@@ -60,7 +60,7 @@ defmodule LayoutOMatic.Layouts.Grid do
               opts: [draw: false]
   end
 
-  def grid(%{} = grid) do
+  def add_grid(%{} = grid) do
     struct(GridBuilder, grid)
     {starting_x, _} = Map.get(grid, :starting_xy)
     {max_x, _} = Map.get(grid, :max_xy)
@@ -69,7 +69,7 @@ defmodule LayoutOMatic.Layouts.Grid do
       Enum.map(Map.get(grid, :grid_template), fn t ->
         case elem(t, 0) do
           :percent ->
-            trunc(elem(t, 0) / 100 * max_x - starting_x)
+            trunc(elem(t, 1) / 100 * max_x - starting_x)
 
           :equal ->
             Enum.map(1..elem(t, 1), fn _ ->
@@ -77,7 +77,7 @@ defmodule LayoutOMatic.Layouts.Grid do
             end)
 
           :relative ->
-            trunc(elem(t, 0) / 100 * max_x)
+            trunc(elem(t, 1) / 100 * max_x)
         end
       end)
 

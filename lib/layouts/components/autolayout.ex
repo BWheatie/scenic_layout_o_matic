@@ -1,7 +1,13 @@
-defmodule LayoutOMatic.Layouts.Components.AutoLayout do
+defmodule LayoutOMatic.Layouts.Components.Layout do
   @moduledoc """
   Handles Auto-Layouts for Scenic Components.
 
+  Each Scenic component is a little different in how it's sized and positioned. While most components are positioned from it's top left most point, passing the next starting point is
+  a little different. Sizing for components are based on font metrics. By determining the dimensions of the font, width and height are calculated and applied to the component. The Layout-O-Matic
+  takes care of all of this for you. Width and height can also be passed as style arguments on a component in which case those dimensions will be used.
+
+  Auto-Layout, while a made up term, is used to describe that components will be automatically laid out by positioning components in equal rows and columns. Possibly in the future there may be other
+  types of layouts.
 
   """
   alias Scenic.Graph
@@ -28,11 +34,13 @@ defmodule LayoutOMatic.Layouts.Components.AutoLayout do
               align: :none
   end
 
+  @spec auto_layout(graph :: Graph.t(), group_id :: :atom, list_of_comp_ids :: [:atom]) ::
+          Graph.t()
   def auto_layout(graph, group_id, list_of_comp_ids) do
     rect_id =
       group_id
       |> Atom.to_string()
-      |> String.split("_")
+      |> String.split("_group")
       |> hd()
       |> String.to_atom()
 
@@ -131,6 +139,7 @@ defmodule LayoutOMatic.Layouts.Components.AutoLayout do
         {:error, error}
     end
   end
+
   defp do_layout(Scenic.Component.Input.Toggle, layout, c_id) do
     case Toggle.translate(layout) do
       {:ok, {x, y}, new_layout} ->
