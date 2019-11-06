@@ -40,8 +40,7 @@ defmodule LayoutOMatic.Layouts.Components.TextField do
             case fits_in_y?(starting_y, max_xy) do
               true ->
                 # fits
-                layout =
-                  Map.put(layout, :starting_xy, {starting_x + width, starting_y})
+                layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
 
                 {:ok, {starting_x + 3, starting_y + 2}, layout}
 

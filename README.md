@@ -8,8 +8,11 @@ Layout Engine for [Scenic Framework](https://github.com/boydm/scenic)
 ## Installation
 
 ```elixir
-{:scenic_layout_o_matic, "~> 0.2.0"}
+{:scenic_layout_o_matic, "~> 0.4.0"}
 ```
+
+## Example App
+[https://github.com/BWheatie/layout_demo](https://github.com/BWheatie/layout_demo)
 
 ## Usage
 Layouts are hard. Layouts _with_ CSS are hard. Layouts _without_ CSS can be both freeing and frustrating. While Scenic is intended for fixed resolution displays, not everyone is comfortable coding fixed {x,y}. What the Layout-O-Matic aims to do is bring familiarity of CSS grid to Scenic to make layouts as comfortable and semantic as possible.
