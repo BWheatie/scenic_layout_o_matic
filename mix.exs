@@ -4,7 +4,7 @@ defmodule LayoutOMatic.MixProject do
   def project do
     [
       app: :scenic_layout_o_matic,
-      version: "0.2.0",
+      version: "0.4.0",
       elixir: "~> 1.8",
       build_embedded: true,
       start_permanent: Mix.env() == :prod,
@@ -29,7 +29,6 @@ defmodule LayoutOMatic.MixProject do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:scenic, "~> 0.10"},
-      {:scenic_driver_glfw, "~> 0.10"},
       {:font_metrics, "~> 0.3"}
     ]
   end

@@ -1,4 +1,4 @@
-defmodule LayoutOMatic.Layouts.Components.AutoLayout do
+defmodule LayoutOMatic.Layouts.Components.Layout do
   @moduledoc """
   Handles Auto-Layouts for Scenic Components.
 
@@ -40,7 +40,7 @@ defmodule LayoutOMatic.Layouts.Components.AutoLayout do
     rect_id =
       group_id
       |> Atom.to_string()
-      |> String.split("_")
+      |> String.split("_group")
       |> hd()
       |> String.to_atom()
 

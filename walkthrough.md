@@ -1,4 +1,4 @@
-### Use Case 1:
+### Use Case:
 Say in your scene you make an api request and want to render a component/primitive per response and display them in equally spaced rows and columns. With Scenic, you would have to know how many responses you would need, the {x,y} of each component factoring in any sort of spacing between. If you decide to change the position of these later, you will need to adjust each component individually. The is the exact case that the Layout-O-Matic was designed for and the example below would take care of that for you.
 
 ```elixir
