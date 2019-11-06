@@ -22,15 +22,16 @@ defmodule LayoutDemo.Scene.Home do
   use Scenic.Scene
 
   alias Scenic.Graph
-  alias LayoutOMatic.Layouts.{Components.AutoLayout, Grid}
+  alias LayoutOMatic.Layouts.Components.Layout, as: Compnents.Layout
+  alias LayoutOMatic.Layouts.Grid
 
-  @viewport Application.get_env(:layout_demo, :viewport)
+  @viewport Application.get_env(:my_app, :viewport)
             |> Map.get(:size)
 
   @grid %{
     grid_template: [{:equal, 2}],
     max_xy: @viewport,
-    grid_ids: [:left, :right],
+    grid_ids: [:left_grid, :right_grid],
     starting_xy: {0, 0},
     opts: [draw: true]
   }
@@ -51,15 +52,15 @@ defmodule LayoutDemo.Scene.Home do
     graph =
       Enum.reduce(id_list, @graph, fn id, graph ->
         graph
-        |> Scenic.Components.button("Button", id: id, styles: %{width: 60, height: 40})
+        |> Scenic.Components.button("Button", id: id, styles: %{width: 80, height: 40})
       end)
 
-    {:ok, new_graph} = AutoLayout.auto_layout(graph, :left_group, id_list)
+    {:ok, new_graph} = AutoLayout.auto_layout(graph, :left_group_grid, id_list)
     {:ok, opts, push: new_graph}
   end
 end
 ```
-`AutoLayout.auto_layout/3` and `Primitive.auto_layout/3` are the two functions you will use. They each take a graph, the `group_id` you want to apply the objects to, and a list of ids(which can be used later to easily access those objects). Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
+`Components.Layout.auto_layout/3` and `Primitives.Layout.auto_layout/3` are the two functions you will use. They each take a graph, the `group_id` you want to apply the objects to, and a list of ids(which can be used later to easily access those objects). Simply replace your list of ids and the component or primitive you want generated and watch the Layout-O-Matic do all the work for you.
 
 ## Walkthrough
 A more thorough [walkthrough](./walkthrough.md) is available.
