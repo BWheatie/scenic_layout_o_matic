@@ -8,13 +8,13 @@ Say in your scene you make an api request and want to render a component/primiti
   @grid %{
     grid_template: [{:equal, 2}],
     max_xy: @viewport,
-    grid_ids: [:left, :right],
+    grid_ids: [:left_grid, :right_grid],
     starting_xy: {0, 0},
     opts: [draw: true]
   }
 
   @graph Graph.build()
-         |> Scenic.Primitives.add_specs_to_graph(Grid.grid(@grid),
+         |> Scenic.Primitives.add_specs_to_graph(Grid.add_grid(@grid),
            id: :root_grid
          )
 ```
@@ -39,12 +39,12 @@ def init(_, opts) do
       |> Scenic.Components.button("Button", id: id, styles: %{width: 80, height: 40})
     end)
 
-  {:ok, new_graph} = AutoLayout.auto_layout(graph, :left_group, id_list)
+  {:ok, new_graph} = Component.Layout.auto_layout(graph, :left_grid_group, id_list)
   {:ok, opts, push: new_graph}
 end
 ```
 
-From our api request we will declare some way to id each element. `id_list` will represent those ids. From there we decide to display a button per response so we generate a button per id in our `Enum.reduce` and will add those buttons to the graph. If we were to push this graph without doing any autolayout-ing, the buttons would not display as they have no {x,y}. This is where the Layout-O-Matic really comes in. Once we have our graph, grid, and ids we can pass those to `Component.Autolayout.auto_layout` which knows how to layout each component. What you get back is a new graph where your buttons are exactly spaced and fit within your grid. Now we push that graph and we can see them.
+From our api request we will declare some way to id each element. `id_list` will represent those ids. From there we decide to display a button per response so we generate a button per id in our `Enum.reduce` and will add those buttons to the graph. If we were to push this graph without doing any autolayout-ing, the buttons would not display as they have no {x,y}. This is where the Layout-O-Matic really comes in. Once we have our graph, grid, and ids we can pass those to `Component.Layout.auto_layout` which knows how to layout each component. What you get back is a new graph where your buttons are exactly spaced and fit within your grid. Now we push that graph and we can see them.
 
 ![button_screenshot](./screenshots/button_intial_layout.png)
 
@@ -89,7 +89,7 @@ def init(_, opts) do
 child_grid = %{
   grid_template: [{:percent, 25}],
   max_xy: child_grid_max,
-  grid_ids: [:left_button_stack],
+  grid_ids: [:left_button_stack_grid],
   starting_xy: child_grid_start,
   opts: [draw: true]
 }
@@ -105,7 +105,7 @@ graph_w_child = @graph
       |> Scenic.Components.button("Button", id: id, styles: %{width: 80, height: 40})
     end)
 
-  {:ok, new_graph} = Layout.auto_layout(graph, :left_button_stack_group, id_list)
+  {:ok, new_graph} = Layout.auto_layout(graph, :left_button_stack_grid_group, id_list)
   {:ok, opts, push: new_graph}
 end
   ```
