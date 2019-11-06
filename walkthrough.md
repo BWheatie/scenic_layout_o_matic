@@ -71,3 +71,45 @@ end
 ```
 
 ![stacked buttons](./screenshots/stacked_buttons.png)
+
+Let's implement that other example from above. If we would like to keep our buttons the same size, we need a grid to fit them in that will force them to be stacked. Auto-layouts work by fitting each component on the x axis until it can no longer fit objects. Once a component cannot fit it will be moved down the y axis then the process begins again. This implementation will be to add 1 grid that is just larger than the button width. This will cause all the objects to move down the y axis greating our stack of buttons. To achieve this we need a new grid to be added to our existing graph then we need to assign our list of buttons to thhat grid. Here's what that looks like.
+
+```elixir
+def init(_, opts) do
+  id_list = [
+    :this_button,
+    :that_button,
+    :other_button,
+    :another_button
+  ]
+
+[%{data: child_grid_max}] = Graph.get(@graph, :left_grid)
+[%{styles: %{t: child_grid_start}}] = Graph.get(@graph, :left_grid_group)
+
+child_grid = %{
+  grid_template: [{:percent, 25}],
+  max_xy: child_grid_max,
+  grid_ids: [:left_button_stack],
+  starting_xy: child_grid_start,
+  opts: [draw: true]
+}
+
+graph_w_child = @graph
+  |> Scenic.Primitives.add_specs_to_graph(Grid.add_grid(child_grid),
+    id: :stacked_buttons_grid
+  )
+
+  graph =
+    Enum.reduce(id_list, graph_w_child, fn id, graph ->
+      graph
+      |> Scenic.Components.button("Button", id: id, styles: %{width: 80, height: 40})
+    end)
+
+  {:ok, new_graph} = Layout.auto_layout(graph, :left_button_stack_group, id_list)
+  {:ok, opts, push: new_graph}
+end
+  ```
+
+So we first need to get the starting and max {x,y}. Since we want our stack on the left side we will use the `left_grid`. In our map of args we are using a different `grid_template`. Here we want a grid just a quarter of the size of the left grid. From there things should be very familiar. We need to add our new grid to the graph then apply our buttons to it.
+
+![stacked button grid](./screenshots/stacked_buttons_grid.png)
