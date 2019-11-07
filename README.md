@@ -22,7 +22,7 @@ defmodule LayoutDemo.Scene.Home do
   use Scenic.Scene
 
   alias Scenic.Graph
-  alias LayoutOMatic.Layouts.Components.Layout, as: Compnents.Layout
+  alias LayoutOMatic.Layouts.Components.Layout, as: Components.Layout
   alias LayoutOMatic.Layouts.Grid
 
   @viewport Application.get_env(:my_app, :viewport)
