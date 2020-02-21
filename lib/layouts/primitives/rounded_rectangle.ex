@@ -1,6 +1,20 @@
-defmodule LayoutOMatic.Layouts.Primitives.RoundedRectangle do
+defmodule LayoutOMatic.RoundedRectangle do
   @default_stroke {1, :white}
-  # A circles size int is the radius and the translate is based on the center
+  # A rectangle is translated from the top left corner
+  @spec translate(%{
+          grid_xy: {number, number},
+          max_xy: {number, number},
+          primitive: %{data: {number, number, number}},
+          starting_xy: {number, number}
+        }) ::
+          {:error, <<_::160, _::_*32>>}
+          | {:ok, {number, number},
+             %{
+               grid_xy: {number, number},
+               max_xy: {number, number},
+               primitive: %{data: {number, number, number}},
+               starting_xy: {number, number}
+             }}
   def translate(
         %{
           primitive: primitive,

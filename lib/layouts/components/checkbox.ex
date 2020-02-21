@@ -1,8 +1,22 @@
-defmodule LayoutOMatic.Layouts.Components.Checkbox do
+defmodule LayoutOMatic.Checkbox do
   # Checkbox size based on :button_font_size with 20 being the default; width/height override
   @default_font_size 20
   @default_font :roboto
 
+  @spec translate(%{
+          component: map,
+          starting_xy: {number, number},
+          grid_xy: {number, number},
+          max_xy: {number, number}
+        }) ::
+          {:error, <<_::160, _::_*32>>}
+          | {:ok, {number, number},
+             %{
+               grid_xy: {number, number},
+               max_xy: number,
+               primitive: %{data: number, styles: map},
+               starting_xy: {number, number}
+             }}
   def translate(
         %{
           component: component,
@@ -79,9 +93,9 @@ defmodule LayoutOMatic.Layouts.Components.Checkbox do
     end
   end
 
-  def fits_in_x?(potential_x, {max_x, _}),
+  defp fits_in_x?(potential_x, {max_x, _}),
     do: potential_x <= max_x
 
-  def fits_in_y?(potential_y, {_, max_y}),
+  defp fits_in_y?(potential_y, {_, max_y}),
     do: potential_y <= max_y
 end
