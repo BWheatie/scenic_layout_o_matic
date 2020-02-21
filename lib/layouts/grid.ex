@@ -1,4 +1,4 @@
-defmodule LayoutOMatic.Layouts.Grid do
+defmodule LayoutOMatic.Grid do
   import Scenic.Primitives
 
   @moduledoc """
@@ -60,6 +60,35 @@ defmodule LayoutOMatic.Layouts.Grid do
               opts: [draw: false]
   end
 
+  @spec simple_grid({number, number}, {number, number}, [atom], [any]) :: [{number, number}]
+  def simple_grid(
+        {viewport_x, viewport_y},
+        {starting_x, starting_y} = starting_xy \\ {0, 0},
+        id_list \\ [:top, :bottom, :left, :right, :center],
+        opts \\ [draw: false]
+      ) do
+    top_bottom_size = {viewport_x, viewport_y - trunc(viewport_y / 2)}
+    top = {top_bottom_size, starting_xy}
+    bottom = {top_bottom_size, {starting_x, viewport_y - trunc(viewport_y / 2)}}
+    left_right_size = {viewport_x - trunc(viewport_x / 2), viewport_y}
+    left = {left_right_size, starting_xy}
+    right = {left_right_size, {viewport_x - trunc(viewport_x / 2), starting_y}}
+    center = {top_bottom_size, left_right_size}
+
+    grid = [
+      {Enum.fetch!(id_list, 0), top},
+      {Enum.fetch!(id_list, 1), bottom},
+      {Enum.fetch!(id_list, 2), left},
+      {Enum.fetch!(id_list, 3), right},
+      {Enum.fetch!(id_list, 4), center}
+    ]
+
+    Enum.map(grid, fn {id, coords} ->
+      build_grid(coords, id, opts[:draw])
+    end)
+  end
+
+  @spec add_grid(map) :: [{number, number}]
   def add_grid(%{} = grid) do
     struct(GridBuilder, grid)
     {starting_x, _} = Map.get(grid, :starting_xy)
@@ -111,11 +140,28 @@ defmodule LayoutOMatic.Layouts.Grid do
     |> elem(0)
   end
 
+<<<<<<< Updated upstream
+=======
+  @doc false
+  defp build_grid({grid_coords, translate}, id, draw) do
+    group_spec(
+      rect_spec(grid_coords,
+        stroke: {1, :black},
+        scissor: grid_coords,
+        hidden: !draw,
+        id: id
+      ),
+      id: String.to_atom(Atom.to_string(id) <> "_group"),
+      t: translate
+    )
+  end
+
+>>>>>>> Stashed changes
   @doc false
   defp build_grid(max_y, size, starting_xy, id, draw) do
     group_spec(
       rect_spec({size, max_y},
-        stroke: {1, :white},
+        stroke: {1, :black},
         scissor: {size, max_y},
         hidden: !draw,
         id: id

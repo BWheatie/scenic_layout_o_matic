@@ -1,7 +1,21 @@
-defmodule LayoutOMatic.Layouts.Components.Slider do
+defmodule LayoutOMatic.Slider do
   # Buttons size based on :button_font_size with 20 being the default; width/height override
   @default_width 300
 
+  @spec translate(%{
+          component: map,
+          grid_xy: {number, number},
+          max_xy: {number, number},
+          starting_xy: {number, number}
+        }) ::
+          {:error, <<_::160, _::_*32>>}
+          | {:ok, {number, number},
+             %{
+               component: map,
+               grid_xy: {number, number},
+               max_xy: {number, number},
+               starting_xy: {number, number}
+             }}
   def translate(
         %{
           component: component,
@@ -66,9 +80,9 @@ defmodule LayoutOMatic.Layouts.Components.Slider do
     end
   end
 
-  def fits_in_x?(potential_x, {max_x, _}),
+  defp fits_in_x?(potential_x, {max_x, _}),
     do: potential_x <= max_x
 
-  def fits_in_y?(potential_y, {_, max_y}),
+  defp fits_in_y?(potential_y, {_, max_y}),
     do: potential_y <= max_y
 end

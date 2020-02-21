@@ -1,4 +1,4 @@
-defmodule LayoutOMatic.Layouts.Components.TextField do
+defmodule LayoutOMatic.TextField do
   # Buttons size based on :button_font_size with 20 being the default; width/height override
   @default_font_size 22
   @char_width 10
@@ -6,6 +6,20 @@ defmodule LayoutOMatic.Layouts.Components.TextField do
   @default_width @char_width * 24
   @default_height @default_font_size * 1.5
 
+  @spec translate(%{
+          component: map,
+          starting_xy: {number, number},
+          grid_xy: {number, number},
+          max_xy: {number, number}
+        }) ::
+          {:error, <<_::160, _::_*32>>}
+          | {:ok, {number, number},
+             %{
+               grid_xy: {number, number},
+               max_xy: number,
+               primitive: %{data: number, styles: map},
+               starting_xy: {number, number}
+             }}
   def translate(
         %{
           component: component,
@@ -70,9 +84,9 @@ defmodule LayoutOMatic.Layouts.Components.TextField do
     end
   end
 
-  def fits_in_x?(potential_x, {max_x, _}),
+  defp fits_in_x?(potential_x, {max_x, _}),
     do: potential_x <= max_x
 
-  def fits_in_y?(potential_y, {_, max_y}),
+  defp fits_in_y?(potential_y, {_, max_y}),
     do: potential_y <= max_y
 end
