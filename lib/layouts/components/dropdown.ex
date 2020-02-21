@@ -1,9 +1,23 @@
-defmodule LayoutOMatic.Layouts.Components.Dropdown do
+defmodule LayoutOMatic.Dropdown do
   # Checkbox size based on :button_font_size with 20 being the default; width/height override
   @default_font_size 20
   @default_font :roboto
   @default_drop_direction :down
 
+  @spec translate(%{
+          component: map,
+          starting_xy: {number, number},
+          grid_xy: {number, number},
+          max_xy: {number, number}
+        }) ::
+          {:error, <<_::160, _::_*32>>}
+          | {:ok, {number, number},
+             %{
+               grid_xy: {number, number},
+               max_xy: number,
+               primitive: %{data: number, styles: map},
+               starting_xy: {number, number}
+             }}
   def translate(
         %{
           component: component,

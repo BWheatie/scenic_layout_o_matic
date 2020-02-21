@@ -1,9 +1,8 @@
-defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
+defmodule LayoutOMatic.PrimitiveLayout do
   alias Scenic.Graph
-  alias LayoutOMatic.Layouts.Primitives.Circle
-  alias LayoutOMatic.Layouts.Primitives.Rectangle
-  alias LayoutOMatic.Layouts.Primitives.RoundedRectangle
-  # alias LayoutOMatic.Layouts.Primitives.Triangle
+  alias LayoutOMatic.Circle
+  alias LayoutOMatic.Rectangle
+  alias LayoutOMatic.RoundedRectangle
 
   import Scenic.Primitives
 
@@ -15,6 +14,7 @@ defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
               graph: %{}
   end
 
+  @spec auto_layout(Scenic.Graph.t(), atom, [atom]) :: {:ok, Scenic.Graph.t()}
   def auto_layout(graph, group_id, list_of_prim_ids) do
     rect_id =
       group_id
@@ -52,8 +52,10 @@ defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
     {:ok, graph}
   end
 
+  @doc false
   defp do_layout(Scenic.Primitive.Arc, _layout, _p_id), do: nil
 
+  @doc false
   defp do_layout(Scenic.Primitive.Circle, layout, p_id) do
     case Circle.translate(layout) do
       {:ok, xy, new_layout} ->
@@ -65,6 +67,7 @@ defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
     end
   end
 
+  @doc false
   defp do_layout(Scenic.Primitive.Rectangle, layout, p_id) do
     case Rectangle.translate(layout) do
       {:ok, xy, new_layout} ->
@@ -76,6 +79,7 @@ defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
     end
   end
 
+  @doc false
   defp do_layout(Scenic.Primitive.RoundedRectangle, layout, p_id) do
     case RoundedRectangle.translate(layout) do
       {:ok, xy, new_layout} ->
@@ -94,15 +98,6 @@ defmodule LayoutOMatic.Layouts.Primitives.AutoLayout do
 
   defp do_layout(Scenic.Primitive.Triangle, _layout, _p_id) do
     nil
-
-    # case Triangle.translate(Map.get(layout, :primitive), Map.get(layout, :max_xy), Map.get(layout, :starting_xy), Map.get(layout, :grid_xy)) do
-    #   {:ok, xy} ->
-    #     new_graph = Graph.modify(Map.get(layout, :graph), p_id, &update_opts(&1, t: xy))
-    #     {xy, new_graph}
-
-    #   {:error, error} ->
-    #     {:error, error}
-    # end
   end
 
   defp do_layout(_, _, _), do: {:error, "Must be a primitive to auto-layout"}

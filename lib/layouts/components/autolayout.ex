@@ -1,4 +1,4 @@
-defmodule LayoutOMatic.Layouts.Components.Layout do
+defmodule LayoutOMatic.ComponentLayout do
   @moduledoc """
   Handles Auto-Layouts for Scenic Components.
 
@@ -9,15 +9,23 @@ defmodule LayoutOMatic.Layouts.Components.Layout do
   Auto-Layout, while a made up term, is used to describe that components will be automatically laid out by positioning components in equal rows and columns. Possibly in the future there may be other
   types of layouts.
 
+  Layout takes data like the component, starting {x,y}, grid {x,y}, graph which are required to do any autolayouting. Optionally layout can apply padding to a group which will pad the groups elements
+  within the groups grid. Options here include: `:padding-top`, `:padding-right`, `:padding-bottom`, `:padding-left`. These are followed by an integer representing the number of pixels to pad by.
+  Percentages are not currently supported. This also supports padding shorthand: {10, 10, 5} which will apply 10 px padding to the top and right and left then 5 px to the bottom. With this pattern
+  a single value will apply to all sides.
+
+  To achieve something which mimics a fixed position, use a separate grid or scene which occupies that space of the viewport and use the max {x, y} of that grid/scene and the min {x, y} for every
+  subsequent scene.
+
+  Objects can be positioned relative to other elements by using passing `:absolute, <group_id_to_position_relative_to`>, {top_pixels, right_pixels, bottom_pixels, left_pixels}`
   """
   alias Scenic.Graph
-  # alias LayoutOMatic.Layouts.Components.RadioGroup
-  alias LayoutOMatic.Layouts.Components.Button
-  alias LayoutOMatic.Layouts.Components.Checkbox
-  alias LayoutOMatic.Layouts.Components.Dropdown
-  alias LayoutOMatic.Layouts.Components.Slider
-  alias LayoutOMatic.Layouts.Components.TextField
-  alias LayoutOMatic.Layouts.Components.Toggle
+  alias LayoutOMatic.Button
+  alias LayoutOMatic.Checkbox
+  alias LayoutOMatic.Dropdown
+  alias LayoutOMatic.Slider
+  alias LayoutOMatic.TextField
+  alias LayoutOMatic.Toggle
 
   import Scenic.Primitives
 
@@ -26,16 +34,10 @@ defmodule LayoutOMatic.Layouts.Components.Layout do
               starting_xy: {},
               max_xy: {},
               grid_xy: {},
-              graph: %{},
-              padding: [{:total, 1}],
-              margin: [{:total, 1}],
-              position: :static,
-              float: :none,
-              align: :none
+              graph: %{}
   end
 
-  @spec auto_layout(graph :: Graph.t(), group_id :: :atom, list_of_comp_ids :: [:atom]) ::
-          Graph.t()
+  @spec auto_layout(Scenic.Graph.t(), atom, [atom]) :: {:ok, Scenic.Graph.t()}
   def auto_layout(graph, group_id, list_of_comp_ids) do
     rect_id =
       group_id
@@ -108,14 +110,6 @@ defmodule LayoutOMatic.Layouts.Components.Layout do
 
   defp do_layout(Scenic.Component.Input.RadioGroup, _layout, _c_id) do
     nil
-    # case RadioGroup.translate(layout) do
-    #   {:ok, {x, y}, new_layout} ->
-    #     new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
-    #     Map.put(new_layout, :graph, new_graph)
-
-    #   {:error, error} ->
-    #     {:error, error}
-    # end
   end
 
   defp do_layout(Scenic.Component.Input.Slider, layout, c_id) do
