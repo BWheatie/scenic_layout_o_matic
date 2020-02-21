@@ -88,8 +88,8 @@ defmodule LayoutOMatic.Grid do
     end)
   end
 
-  @spec add_grid(map) :: [{number, number}]
-  def add_grid(%{} = grid) do
+  @spec complex_grid(map) :: [{number, number}]
+  def complex_grid(%{} = grid) do
     struct(GridBuilder, grid)
     {starting_x, _} = Map.get(grid, :starting_xy)
     {max_x, _} = Map.get(grid, :max_xy)
@@ -98,7 +98,11 @@ defmodule LayoutOMatic.Grid do
       Enum.map(Map.get(grid, :grid_template), fn t ->
         case elem(t, 0) do
           :percent ->
-            trunc(elem(t, 1) / 100 * max_x - starting_x)
+            sizes = tuple_size(t) - 1
+
+            Enum.reduce(1..sizes, 1, fn _s, acc ->
+              trunc(elem(t, acc) / 100 * max_x - starting_x)
+            end)
 
           :equal ->
             Enum.map(1..elem(t, 1), fn _ ->
@@ -140,8 +144,6 @@ defmodule LayoutOMatic.Grid do
     |> elem(0)
   end
 
-<<<<<<< Updated upstream
-=======
   @doc false
   defp build_grid({grid_coords, translate}, id, draw) do
     group_spec(
@@ -156,7 +158,6 @@ defmodule LayoutOMatic.Grid do
     )
   end
 
->>>>>>> Stashed changes
   @doc false
   defp build_grid(max_y, size, starting_xy, id, draw) do
     group_spec(
