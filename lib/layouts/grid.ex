@@ -88,8 +88,13 @@ defmodule LayoutOMatic.Grid do
     end)
   end
 
+<<<<<<< Updated upstream
   @spec complex_grid(map) :: [{number, number}]
   def complex_grid(%{} = grid) do
+=======
+  @spec add_grid(map) :: [{number, number}]
+  def add_grid(%{} = grid) do
+>>>>>>> Stashed changes
     struct(GridBuilder, grid)
     {starting_x, _} = Map.get(grid, :starting_xy)
     {max_x, _} = Map.get(grid, :max_xy)
