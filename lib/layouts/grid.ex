@@ -88,6 +88,7 @@ defmodule LayoutOMatic.Grid do
     end)
   end
 
+  @spec add_grid(map) :: [{number, number}]
   def complex_grid(%{} = grid) do
     struct(GridBuilder, grid)
     {starting_x, _} = Map.get(grid, :starting_xy)
