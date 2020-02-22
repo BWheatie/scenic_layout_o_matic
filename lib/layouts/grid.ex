@@ -70,10 +70,13 @@ defmodule LayoutOMatic.Grid do
     top_bottom_size = {viewport_x, viewport_y - trunc(viewport_y / 2)}
     top = {top_bottom_size, starting_xy}
     bottom = {top_bottom_size, {starting_x, viewport_y - trunc(viewport_y / 2)}}
+
     left_right_size = {viewport_x - trunc(viewport_x / 2), viewport_y}
     left = {left_right_size, starting_xy}
     right = {left_right_size, {viewport_x - trunc(viewport_x / 2), starting_y}}
-    center = {top_bottom_size, left_right_size}
+
+    # center should just be a point and the rect should ultimately do nothing.
+    center = {{0, 0}, top_bottom_size}
 
     grid = [
       {Enum.fetch!(id_list, 0), top},
