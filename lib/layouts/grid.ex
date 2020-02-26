@@ -13,7 +13,7 @@ defmodule LayoutOMatic.Grid do
   * `:viewport` - The viewport struct you want a grid drawn to.
   * `:grid_template` - The type and size of columns for the grid. *Required field*.
     * `{:equal, number_of_equal_columns}` - Indicates columns will be equally sized and how many of them to be drawn
-    * `{:percentage, percentage_of_viewport}` - Indicates columns will be a percentage of the viewport and what percentage of the viewport. This option is a list of percentages which cannot exceed 100%.
+    * `{:percent, percentage_of_viewport}` - Indicates columns will be a percentage of the viewport and what percentage of the viewport. This option is a list of percentages which cannot exceed 100%.
     * `{:relative, percentage_relative_to_object}` - Indicates columns will be drawn relative to another object. This could be used to draw a grid relative to another primitive of component as well as another grid.
   * `:max_xy` - The maximum {x,y} the grid should fit into. This will likely be the viewport size in an inital graph. Default `{700, 600}`. This is the default viewport size for a new scenic app.
   * `:starting_xy` - The {x,y} the grid should start at. Default is {0, 0}.
@@ -67,16 +67,16 @@ defmodule LayoutOMatic.Grid do
         id_list \\ [:top, :bottom, :left, :right, :center],
         opts \\ [draw: false]
       ) do
-    top_bottom_size = {viewport_x, viewport_y - trunc(viewport_y / 2)}
+    top_bottom_size = {viewport_x, trunc(viewport_y / 2)}
     top = {top_bottom_size, starting_xy}
-    bottom = {top_bottom_size, {starting_x, viewport_y - trunc(viewport_y / 2)}}
+    bottom = {top_bottom_size, {starting_x, trunc(viewport_y / 2)}}
 
-    left_right_size = {viewport_x - trunc(viewport_x / 2), viewport_y}
+    left_right_size = {trunc(viewport_x / 2), viewport_y}
     left = {left_right_size, starting_xy}
-    right = {left_right_size, {viewport_x - trunc(viewport_x / 2), starting_y}}
+    right = {left_right_size, {trunc(viewport_x / 2), starting_y}}
 
     # center should just be a point and the rect should ultimately do nothing.
-    center = {{0, 0}, top_bottom_size}
+    center = {{0, 0}, {elem(left_right_size, 0), elem(top_bottom_size, 1)}}
 
     grid = [
       {Enum.fetch!(id_list, 0), top},
@@ -148,11 +148,11 @@ defmodule LayoutOMatic.Grid do
   end
 
   @doc false
-  defp build_grid({grid_coords, translate}, id, draw) do
+  defp build_grid({size, translate}, id, draw) do
     group_spec(
-      rect_spec(grid_coords,
+      rect_spec(size,
         stroke: {1, :black},
-        scissor: grid_coords,
+        scissor: size,
         hidden: !draw,
         id: id
       ),

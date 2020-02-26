@@ -45,7 +45,7 @@ defmodule LayoutOMatic.TextPosition do
     else
       {width, height} = get_font_metrics(string, font_size)
 
-      {x - trunc(width / 2), y + trunc(height / 2)} |> IO.inspect()
+      {x - trunc(width / 2), y + trunc(height / 2)}
     end
   end
 
