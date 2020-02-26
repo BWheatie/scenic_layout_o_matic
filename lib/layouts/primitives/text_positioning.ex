@@ -125,11 +125,7 @@ defmodule LayoutOMatic.TextPosition do
         string
         |> String.split("\n")
         |> Enum.map(fn w ->
-<<<<<<< HEAD
           get_font_metrics(w, font_size, font)
-=======
-          get_font_metrics(w, font_size)
->>>>>>> baae048 (fixes grid center and adds text position centering)
         end)
 
       width =
@@ -146,7 +142,6 @@ defmodule LayoutOMatic.TextPosition do
         end)
         |> Enum.sum()
 
-<<<<<<< HEAD
       {x - width / 2, y - height / 4}
     else
       {width, height} = get_font_metrics(string, font_size, font)
@@ -157,21 +152,9 @@ defmodule LayoutOMatic.TextPosition do
 
   defp get_font_metrics(text, font_size, font) do
     fm = Scenic.Cache.Static.FontMetrics.get(font)
-=======
-      {x - trunc(width / 2), y - trunc(height / 2)}
-    else
-      {width, height} = get_font_metrics(string, font_size)
-
-      {x - trunc(width / 2), y + trunc(height / 2)} |> IO.inspect()
-    end
-  end
-
-  defp get_font_metrics(text, font_size) do
-    fm = Scenic.Cache.Static.FontMetrics.get!(@default_font)
->>>>>>> baae048 (fixes grid center and adds text position centering)
     ascent = FontMetrics.ascent(font_size, fm)
     fm_width = FontMetrics.width(text, font_size, fm)
 
-    {trunc(fm_width), trunc(ascent)}
+    {fm_width, ascent}
   end
 end

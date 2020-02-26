@@ -9,8 +9,46 @@ defmodule LayoutOMatic.Grid do
 
   Grids allow you to segment a viewport much like a CSS grid. This allows for
   clear and symantic layouts. Creating a grid is as simple as passing a
+<<<<<<< HEAD
   map with the following keys representing where to start the grid, where
   to end the grid, grid_ids, and opts.
+=======
+  %GridBuilder{} with some values and your viewport will have a grid ready to
+  be used.
+
+  ## Data
+  * `:viewport` - The viewport struct you want a grid drawn to.
+  * `:grid_template` - The type and size of columns for the grid. *Required field*.
+    * `{:equal, number_of_equal_columns}` - Indicates columns will be equally sized and how many of them to be drawn
+    * `{:percent, percentage_of_viewport}` - Indicates columns will be a percentage of the viewport and what percentage of the viewport. This option is a list of percentages which cannot exceed 100%.
+    * `{:relative, percentage_relative_to_object}` - Indicates columns will be drawn relative to another object. This could be used to draw a grid relative to another primitive of component as well as another grid.
+  * `:max_xy` - The maximum {x,y} the grid should fit into. This will likely be the viewport size in an inital graph. Default `{700, 600}`. This is the default viewport size for a new scenic app.
+  * `:starting_xy` - The {x,y} the grid should start at. Default is {0, 0}.
+  * `:grid_ids` - The ids used for each segment of the grid in order to recall the segment later in order to assign a list of objects to it for layouts. Symantically named ids is recommneded. *Required field*
+  * `:opts` - A list of additional options
+    * `:draw` - Boolean to determine if the grid should be drawn or not. Useful for making sure objects are falling where expected. Default is `false`.
+
+  ```
+  @viewport :scenic_layout_o_matic
+            |> Application.get_env(:viewport)
+            |> Map.get(:size)
+
+  @grid %GridBuilder{
+    grid_template: [{:equal, 2}],
+    max_xy: @viewport,
+    grid_ids: [:left, :right],
+    starting_xy: {0, 0}
+  }
+
+  @graph Graph.build()
+         |> add_specs_to_graph(Grid.grid(@grid),
+           id: :root_grid
+         )
+
+  def init(_, opts) do
+    {:ok, opts, push: @graph}
+  end
+>>>>>>> 018faaa (Adds center text positioning)
   """
 
   defmodule Error do
