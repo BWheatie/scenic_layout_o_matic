@@ -10,6 +10,7 @@ defmodule LayoutOMatic.Grid do
   Grids allow you to segment a viewport much like a CSS grid. This allows for
   clear and symantic layouts. Creating a grid is as simple as passing a
 <<<<<<< HEAD
+<<<<<<< HEAD
   map with the following keys representing where to start the grid, where
   to end the grid, grid_ids, and opts.
 =======
@@ -49,6 +50,10 @@ defmodule LayoutOMatic.Grid do
     {:ok, opts, push: @graph}
   end
 >>>>>>> 018faaa (Adds center text positioning)
+=======
+  map with the following keys representing where to start the grid, where
+  to end the grid, grid_ids, and opts.
+>>>>>>> 2ec134f (Grids are the key to the layout-o-matic working for engineers but is)
   """
 
   defmodule Error do
@@ -137,6 +142,59 @@ defmodule LayoutOMatic.Grid do
     column_sizes =
       Enum.map(percentages, fn p ->
         p / 100 * max_x - starting_x
+      end)
+
+    %{
+      starting_xy: starting_xy,
+      max_xy: max_xy,
+      column_sizes: column_sizes,
+      grid_ids: grid_ids,
+      opts: opts
+    }
+    |> get_x_coordinates()
+  end
+
+  @doc """
+  A pixel grid is identical to a percentatge grid with the difference being that instead of a list of numbers representing percentages, that list represents pixels.
+  Like a simple grid, pixel take a starting and max point but also take a list of numbers representing the grid portions in pixel from left to right. Note the
+  returned grid will be a list of primitive specs so you will need to use `add_specs_to_graph/2`.
+
+  ```elixir
+  Grid.pixel({0, 0}, {700, 600}, [50, 150, 25], [:left_nav, :content, :side_bar], [draw: true])
+  ```
+  """
+
+  @spec pixel({number, number}, {number, number}, [number], [atom], []) :: [
+          Scenic.Primitives.Group.t()
+        ]
+  def pixel(starting_xy, max_xy, [] = sizes, [] = grid_ids, opts \\ []) do
+    %{
+      starting_xy: starting_xy,
+      max_xy: max_xy,
+      column_sizes: sizes,
+      grid_ids: grid_ids,
+      opts: opts
+    }
+    |> get_x_coordinates()
+  end
+
+  @doc """
+  An equal grid is much like a pixel grid but instead of determined sizes, it takes a number representing the equal number of portions to be created.
+  Like a simple grid, equal take a starting and max point but also take a number representing the equally sized grid portions from left to right. Note the
+  returned grid will be a list of primitive specs so you will need to use `add_specs_to_graph/2`.
+
+  ```elixir
+  Grid.equal({0, 0}, {700, 600}, 4, [:left, :left_center, :right_center, :right], [draw: true])
+  ```
+  """
+
+  @spec equal({number, number}, {number, number}, number, [atom], []) :: [
+          Scenic.Primitives.Group.t()
+        ]
+  def equal(starting_xy, {max_x, _} = max_xy, number_of_portions, grid_ids, opts \\ []) do
+    column_sizes =
+      Enum.map(1..number_of_portions, fn p ->
+        div(max_x, p)
       end)
 
     %{

@@ -3,7 +3,6 @@ defmodule LayoutOMatic.TextPosition do
   While Scenic supports text positioning within a component, it does not support positioning
   based on a point. This works by passing a string and point to be postioned from.
   """
-
   # Text are translated from the bottom left of the character
 
   # @spec left(any, any) :: none
@@ -150,8 +149,9 @@ defmodule LayoutOMatic.TextPosition do
     end
   end
 
+  @doc false
   defp get_font_metrics(text, font_size, font) do
-    fm = Scenic.Cache.Static.FontMetrics.get(font)
+    fm = Scenic.Cache.Static.FontMetrics.get!(font)
     ascent = FontMetrics.ascent(font_size, fm)
     fm_width = FontMetrics.width(text, font_size, fm)
 
