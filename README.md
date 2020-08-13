@@ -28,16 +28,9 @@ defmodule LayoutDemo.Scene.Home do
   @viewport Application.get_env(:my_app, :viewport)
             |> Map.get(:size)
 
-  @grid %{
-    grid_template: [{:equal, 2}],
-    max_xy: @viewport,
-    grid_ids: [:left_grid, :right_grid],
-    starting_xy: {0, 0},
-    opts: [draw: true]
-  }
 
   @graph Graph.build()
-         |> Scenic.Primitives.add_specs_to_graph(Grid.grid(@grid),
+         |> add_specs_to_graph(Grid.simple({0, 0}, @viewport_size, [:top, :right, :bottom, :left, :center])),
            id: :root_grid
          )
 
