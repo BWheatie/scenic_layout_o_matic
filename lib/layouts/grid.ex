@@ -140,8 +140,6 @@ defmodule LayoutOMatic.Grid do
     |> elem(0)
   end
 
-<<<<<<< Updated upstream
-=======
   @doc false
   defp build_grid({grid_coords, translate}, id, draw) do
     group_spec(
@@ -156,7 +154,6 @@ defmodule LayoutOMatic.Grid do
     )
   end
 
->>>>>>> Stashed changes
   @doc false
   defp build_grid(max_y, size, starting_xy, id, draw) do
     group_spec(
