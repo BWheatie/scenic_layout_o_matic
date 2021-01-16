@@ -1,5 +1,4 @@
 defmodule LayoutOMatic.TextField do
-  # Buttons size based on :button_font_size with 20 being the default; width/height override
   @default_font_size 22
   @char_width 10
 

@@ -39,6 +39,10 @@ defmodule LayoutOMatic.ComponentLayout do
 
   @spec auto_layout(Scenic.Graph.t(), atom, [atom]) :: {:ok, Scenic.Graph.t()}
   def auto_layout(graph, group_id, list_of_comp_ids) do
+    # get the rectangle that is associated with the group passed in.
+    # Groups are the starting_xy as they have a translate. The size
+    # of the associated rectangle is the max size of the grid
+    # portion which is translated from the group translate
     rect_id =
       group_id
       |> Atom.to_string()
@@ -46,9 +50,14 @@ defmodule LayoutOMatic.ComponentLayout do
       |> hd()
       |> String.to_atom()
 
+    # Get the starting point of the area
     [%{transforms: %{translate: grid_xy}}] = Graph.get(graph, group_id)
+    # Get the max size of the area
     [%{data: max_xy}] = Graph.get(graph, rect_id)
 
+    # this is the meat of this module. Reduce the list of ids and get those Components from the graph.
+    # Determine what Component it is to send it to the right module to get sizing then return the graph
+    # that has been updated with the Components laid out.
     graph =
       Enum.reduce(list_of_comp_ids, [], fn c_id, acc ->
         [%{data: {comp_type, _}} = component] = Graph.get(graph, c_id)
@@ -136,6 +145,17 @@ defmodule LayoutOMatic.ComponentLayout do
 
   defp do_layout(Scenic.Component.Input.Toggle, layout, c_id) do
     case Toggle.translate(layout) do
+      {:ok, {x, y}, new_layout} ->
+        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+        Map.put(new_layout, :graph, new_graph)
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
+
+  defp do_layout(_, layout, c_id) do
+    case Custom.translate(layout) do
       {:ok, {x, y}, new_layout} ->
         new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
         Map.put(new_layout, :graph, new_graph)

@@ -1,6 +1,9 @@
 defmodule LayoutOMatic.Grid do
   import Scenic.Primitives
 
+  alias Scenic.Graph
+
+  @updatable_opts [:translate, :stroke, :hidden]
   @moduledoc """
   Add a grid to a viewport.
 
@@ -49,13 +52,13 @@ defmodule LayoutOMatic.Grid do
   """
   @spec simple({number, number}, {number, number}, [any]) :: [{number, number}]
   def simple({starting_x, starting_y} = starting_xy, {max_x, max_y}, grid_ids, opts \\ []) do
-    top_bottom_size = {max_x, trunc(max_y / 2)}
+    top_bottom_size = {max_x, max_y / 2}
     top = {top_bottom_size, starting_xy}
-    bottom = {top_bottom_size, {starting_x, trunc(max_y / 2)}}
+    bottom = {top_bottom_size, {starting_x, max_y / 2}}
 
-    left_right_size = {trunc(max_x / 2), max_y}
+    left_right_size = {max_x / 2, max_y}
     left = {left_right_size, starting_xy}
-    right = {left_right_size, {trunc(max_x / 2), starting_y}}
+    right = {left_right_size, {max_x / 2, starting_y}}
 
     # center should just be a point and the rect should ultimately do nothing.
     center = {starting_xy, {elem(left_right_size, 0), elem(top_bottom_size, 1)}}
@@ -82,19 +85,20 @@ defmodule LayoutOMatic.Grid do
   Grid.percentage({0, 0}, {700, 600}, [25, 50, 25], [:left, :center, :right], [draw: true])
   ```
   """
-  @spec percentage({number, number}, {number, number}, [number], [atom], [any]) :: [
+  @spec percentage({number, number}, {number, number}, [any], [atom]) :: [
           Scenic.Primitives.Group.t()
         ]
   def percentage(
         {starting_x, _} = starting_xy,
         {max_x, _} = max_xy,
-        [] = percentages,
-        [] = grid_ids,
+        percentages,
+        grid_ids,
         opts \\ []
-      ) do
+      )
+      when is_list(percentages) and is_list(grid_ids) do
     column_sizes =
       Enum.map(percentages, fn p ->
-        trunc(p / 100 * max_x - starting_x)
+        p / 100 * max_x - starting_x
       end)
 
     %{
@@ -120,7 +124,8 @@ defmodule LayoutOMatic.Grid do
   @spec pixel({number, number}, {number, number}, [number], [atom], []) :: [
           Scenic.Primitives.Group.t()
         ]
-  def pixel(starting_xy, max_xy, [] = sizes, [] = grid_ids, opts \\ []) do
+  def pixel(starting_xy, max_xy, [] = sizes, [] = grid_ids, opts \\ [])
+      when is_list(sizes) and is_list(grid_ids) do
     %{
       starting_xy: starting_xy,
       max_xy: max_xy,
@@ -144,21 +149,53 @@ defmodule LayoutOMatic.Grid do
   @spec equal({number, number}, {number, number}, number, [atom], []) :: [
           Scenic.Primitives.Group.t()
         ]
-  def equal(starting_xy, {max_x, _} = max_xy, number_of_portions, grid_ids, opts \\ []) do
-    column_sizes =
-      Enum.map(1..number_of_portions, fn p ->
-        div(max_x, p)
-      end)
+  def equal(starting_xy, {max_x, _} = max_xy, number_of_portions, grid_ids, opts \\ [])
+      when is_list(grid_ids) do
+    column_sizes = div(max_x, number_of_portions)
 
     %{
       starting_xy: starting_xy,
       max_xy: max_xy,
-      column_sizes: column_sizes,
+      column_sizes: [column_sizes, column_sizes],
       grid_ids: grid_ids,
       opts: opts
     }
     |> get_x_coordinates()
   end
+
+  # idea is to be able to recursively iterate through an unknown depth graph to get groups and primitives
+  # def update_grid(graph, id, opts) do
+  # end
+
+  # def update_grid(graph, grid_id, opts) when is_atom(grid_id) do
+  #   [%{data: children}] = Graph.get(graph, grid_id)
+  #   process_children(graph, children, opts)
+  # end
+
+  # defp process_children(graph, children, opts) do
+  #   Enum.reduce(children, {[], graph}, fn c, {prev_children, acc_graph} ->
+  #     case Graph.get_by_uid(graph, c) do
+  #       %{module: Scenic.Primitive.Group, data: children} ->
+  #         {children ++ prev_children, acc_graph}
+
+  #       primitive ->
+  #         this_graph =
+  #           acc_graph
+  #           |> Graph.modify(primitive, fn p ->
+  #             update_opts(p, opts)
+  #           end)
+
+  #         {children, this_graph}
+  #     end
+  #   end)
+  #   |> case do
+  #     {[_ | _] = children, new_graph} ->
+  #       process_children(new_graph, children, opts)
+
+  #     {[], new_graph} ->
+  #       new_graph
+  #   end
+  # end
 
   @doc false
   defp get_x_coordinates(grid) do
@@ -188,8 +225,8 @@ defmodule LayoutOMatic.Grid do
       rect_spec(size,
         stroke: {1, :black},
         scissor: size,
-        hidden: !draw,
-        id: id
+        id: id,
+        hidden: !draw
       ),
       id: String.to_atom(Atom.to_string(id) <> "_group"),
       t: translate
@@ -202,8 +239,8 @@ defmodule LayoutOMatic.Grid do
       rect_spec({size, max_y},
         stroke: {1, :black},
         scissor: {size, max_y},
-        hidden: !draw,
-        id: id
+        id: id,
+        hidden: !draw
       ),
       id: String.to_atom(Atom.to_string(id) <> "_group"),
       t: {elem(starting_xy, 0), elem(starting_xy, 1)}

@@ -1,5 +1,33 @@
 defmodule LayoutOMatic.Circle do
   # A circles size int is the radius and the translate is based on the center
+
+  def alternate_translate(
+        %{primitive: primitive, starting_xy: starting_xy, grid_xy: {grid_x, grid_y} = grid_xy} =
+          layout
+      ) do
+    %{styles: %{stroke: {stroke_fill, _}, radius: size}} = primitive
+    {starting_x, starting_y} = starting_xy
+    diameter = size * 2
+
+    if starting_xy == grid_xy do
+      # if starting new group of primitives use the grid translate
+      x = grid_x + stroke_fill + size + 5
+      y = grid_y + stroke_fill + size + 5
+      layout = %{layout | starting_xy: {x, y}}
+      {:ok, {x, y}, layout}
+    else
+      # already in a new group, use starting_xy
+
+      # x to start at/diameter/stroke fill
+      potential_x = starting_x + diameter + stroke_fill + 5
+
+      # update the starting_xy with where this primitive is being translated
+      # the next primitive will use this xy
+      new_layout = Map.put(layout, :starting_xy, {potential_x, starting_y})
+      {:ok, {potential_x, starting_y}, new_layout}
+    end
+  end
+
   @spec translate(%{
           grid_xy: {any, number},
           max_xy: number,
