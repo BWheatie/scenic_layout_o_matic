@@ -7,15 +7,18 @@ defmodule LayoutOMatic.PrimitiveLayout do
   import Scenic.Primitives
 
   defmodule Layout do
-    defstruct primitive: %Scenic.Primitive{},
-              starting_xy: {},
-              max_xy: {},
-              grid_xy: {},
-              graph: %{}
+    defstruct [
+      :primitive,
+      :starting_xy,
+      :max_xy,
+      :grid_xy,
+      :graph,
+      :padding
+    ]
   end
 
   @spec auto_layout(Scenic.Graph.t(), atom, [atom]) :: {:ok, Scenic.Graph.t()}
-  def auto_layout(graph, group_id, list_of_prim_ids) do
+  def auto_layout(graph, group_id, list_of_prim_ids) when is_atom(group_id) do
     rect_id =
       group_id
       |> Atom.to_string()
@@ -52,9 +55,42 @@ defmodule LayoutOMatic.PrimitiveLayout do
     {:ok, graph}
   end
 
+  # Used to layout list of circles given a point. Specifically used by Draw-O-Matic to layout color picker
+  def auto_layout(graph, point, list_of_prim_ids) when is_tuple(point) do
+    graph =
+      Enum.reduce(list_of_prim_ids, [], fn p_id, acc ->
+        [primitive] = Graph.get(graph, p_id)
+
+        layout =
+          case acc do
+            [] ->
+              %Layout{
+                primitive: primitive,
+                starting_xy: point,
+                grid_xy: point,
+                graph: graph
+              }
+
+            _ ->
+              acc
+          end
+
+        do_alternate_layout(layout, p_id)
+      end)
+      |> Map.get(:graph)
+
+    graph
+  end
+
+  @doc false
+  defp do_alternate_layout(layout, p_id) do
+    {:ok, xy, new_layout} = Circle.alternate_translate(layout)
+    new_graph = Graph.modify(Map.get(new_layout, :graph), p_id, &update_opts(&1, t: xy))
+    Map.put(new_layout, :graph, new_graph)
+  end
+
   @doc false
   defp do_layout(Scenic.Primitive.Arc, _layout, _p_id), do: nil
-
   @doc false
   defp do_layout(Scenic.Primitive.Circle, layout, p_id) do
     case Circle.translate(layout) do

@@ -1,5 +1,4 @@
 defmodule LayoutOMatic.TextField do
-  # Buttons size based on :button_font_size with 20 being the default; width/height override
   @default_font_size 22
   @char_width 10
 
@@ -34,53 +33,38 @@ defmodule LayoutOMatic.TextField do
     {starting_x, starting_y} = starting_xy
     {grid_x, grid_y} = grid_xy
 
-    case starting_xy == grid_xy do
-      true ->
-        layout =
-          Map.put(
-            layout,
-            :starting_xy,
-            {starting_x + width, starting_y}
-          )
+    if starting_xy == grid_xy do
+      layout =
+        Map.put(
+          layout,
+          :starting_xy,
+          {starting_x + width, starting_y}
+        )
 
-        {:ok, {starting_x + 3, starting_y + 2}, layout}
+      {:ok, {starting_x + 3, starting_y + 2}, layout}
+    else
+      if fits_in_x?(starting_x + width, max_xy) do
+        if fits_in_y?(starting_y, max_xy) do
+          layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
 
-      false ->
-        # already in a new group, use starting_xy
-        case fits_in_x?(starting_x + width, max_xy) do
-          # fits in x
-          true ->
-            # fit in y?
-            case fits_in_y?(starting_y, max_xy) do
-              true ->
-                # fits
-                layout = Map.put(layout, :starting_xy, {starting_x + width, starting_y})
-
-                {:ok, {starting_x + 3, starting_y + 2}, layout}
-
-              # Does not fit
-              false ->
-                {:error, "Does not fit in grid"}
-            end
-
-          # doesnt fit in x
-          false ->
-            # fit in new y?
-            new_y = grid_y + height
-
-            case fits_in_y?(new_y, max_xy) do
-              true ->
-                new_layout =
-                  layout
-                  |> Map.put(:grid_xy, {grid_x, new_y})
-                  |> Map.put(:starting_xy, {width, new_y})
-
-                {:ok, {grid_x + 3, new_y + 2}, new_layout}
-
-              false ->
-                {:error, "Does not fit in the grid"}
-            end
+          {:ok, {starting_x + 3, starting_y + 2}, layout}
+        else
+          {:error, "Does not fit in grid"}
         end
+
+        new_y = grid_y + height
+
+        if fits_in_y?(new_y, max_xy) do
+          new_layout =
+            layout
+            |> Map.put(:grid_xy, {grid_x, new_y})
+            |> Map.put(:starting_xy, {width, new_y})
+
+          {:ok, {grid_x + 3, new_y + 2}, new_layout}
+        else
+          {:error, "Does not fit in grid"}
+        end
+      end
     end
   end
 
