@@ -9,11 +9,6 @@ defmodule LayoutOMatic.Grid do
 
   Grids allow you to segment a viewport much like a CSS grid. This allows for
   clear and symantic layouts. Creating a grid is as simple as passing a
-<<<<<<< HEAD
-<<<<<<< HEAD
-  map with the following keys representing where to start the grid, where
-  to end the grid, grid_ids, and opts.
-=======
   %GridBuilder{} with some values and your viewport will have a grid ready to
   be used.
 
@@ -49,11 +44,8 @@ defmodule LayoutOMatic.Grid do
   def init(_, opts) do
     {:ok, opts, push: @graph}
   end
->>>>>>> 018faaa (Adds center text positioning)
-=======
   map with the following keys representing where to start the grid, where
   to end the grid, grid_ids, and opts.
->>>>>>> 2ec134f (Grids are the key to the layout-o-matic working for engineers but is)
   """
 
   defmodule Error do
@@ -167,7 +159,8 @@ defmodule LayoutOMatic.Grid do
   @spec pixel({number, number}, {number, number}, [number], [atom], []) :: [
           Scenic.Primitives.Group.t()
         ]
-  def pixel(starting_xy, max_xy, [] = sizes, [] = grid_ids, opts \\ []) do
+  def pixel(starting_xy, max_xy, [] = sizes, [] = grid_ids, opts \\ [])
+      when is_list(sizes) and is_list(grid_ids) do
     %{
       starting_xy: starting_xy,
       max_xy: max_xy,
@@ -191,16 +184,14 @@ defmodule LayoutOMatic.Grid do
   @spec equal({number, number}, {number, number}, number, [atom], []) :: [
           Scenic.Primitives.Group.t()
         ]
-  def equal(starting_xy, {max_x, _} = max_xy, number_of_portions, grid_ids, opts \\ []) do
-    column_sizes =
-      Enum.map(1..number_of_portions, fn p ->
-        div(max_x, p)
-      end)
+  def equal(starting_xy, {max_x, _} = max_xy, number_of_portions, grid_ids, opts \\ [])
+      when is_list(grid_ids) do
+    column_sizes = div(max_x, number_of_portions)
 
     %{
       starting_xy: starting_xy,
       max_xy: max_xy,
-      column_sizes: column_sizes,
+      column_sizes: [column_sizes, column_sizes],
       grid_ids: grid_ids,
       opts: opts
     }
