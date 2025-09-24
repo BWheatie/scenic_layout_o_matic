@@ -21,8 +21,8 @@ defmodule LayoutOMatic.ComponentLayout do
   """
   alias Scenic.Graph
   alias LayoutOMatic.Button
-  alias LayoutOMatic.Checkbox
-  alias LayoutOMatic.Dropdown
+  # alias LayoutOMatic.Checkbox
+  # alias LayoutOMatic.Dropdown
   alias LayoutOMatic.Slider
   alias LayoutOMatic.TextField
   alias LayoutOMatic.Toggle
@@ -30,6 +30,13 @@ defmodule LayoutOMatic.ComponentLayout do
   import Scenic.Primitives
 
   defmodule Layout do
+    @type t :: %Layout{
+            component: Scenic.Primitive.t(),
+            starting_xy: tuple(),
+            max_xy: tuple(),
+            grid_xy: tuple(),
+            graph: Scenic.Graph.t()
+          }
     defstruct component: %Scenic.Primitive{},
               starting_xy: {},
               max_xy: {},
@@ -95,27 +102,27 @@ defmodule LayoutOMatic.ComponentLayout do
     end
   end
 
-  defp do_layout(Scenic.Component.Input.Checkbox, layout, c_id) do
-    case Checkbox.translate(layout) do
-      {:ok, {x, y}, new_layout} ->
-        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
-        Map.put(new_layout, :graph, new_graph)
+  # defp do_layout(Scenic.Component.Input.Checkbox, layout, c_id) do
+  #   case Checkbox.translate(layout) do
+  #     {:ok, {x, y}, new_layout} ->
+  #       new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+  #       Map.put(new_layout, :graph, new_graph)
 
-      {:error, error} ->
-        {:error, error}
-    end
-  end
+  #     {:error, error} ->
+  #       {:error, error}
+  #   end
+  # end
 
-  defp do_layout(Scenic.Component.Input.Dropdown, layout, c_id) do
-    case Dropdown.translate(layout) do
-      {:ok, {x, y}, new_layout} ->
-        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
-        Map.put(new_layout, :graph, new_graph)
+  # defp do_layout(Scenic.Component.Input.Dropdown, layout, c_id) do
+  #   case Dropdown.translate(layout) do
+  #     {:ok, {x, y}, new_layout} ->
+  #       new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+  #       Map.put(new_layout, :graph, new_graph)
 
-      {:error, error} ->
-        {:error, error}
-    end
-  end
+  #     {:error, error} ->
+  #       {:error, error}
+  #   end
+  # end
 
   defp do_layout(Scenic.Component.Input.RadioGroup, _layout, _c_id) do
     nil
@@ -154,14 +161,14 @@ defmodule LayoutOMatic.ComponentLayout do
     end
   end
 
-  defp do_layout(_, layout, c_id) do
-    case Custom.translate(layout) do
-      {:ok, {x, y}, new_layout} ->
-        new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
-        Map.put(new_layout, :graph, new_graph)
+  # defp do_layout(_, layout, c_id) do
+  #   case Custom.translate(layout) do
+  #     {:ok, {x, y}, new_layout} ->
+  #       new_graph = Graph.modify(Map.get(new_layout, :graph), c_id, &update_opts(&1, t: {x, y}))
+  #       Map.put(new_layout, :graph, new_graph)
 
-      {:error, error} ->
-        {:error, error}
-    end
-  end
+  #     {:error, error} ->
+  #       {:error, error}
+  #   end
+  # end
 end

@@ -3,13 +3,15 @@ defmodule LayoutOMatic.Button do
   @default_font_size 20
   @default_font :roboto
 
+  alias Scenic.Assets.Static
+
   @spec translate(%{
           component: map,
           starting_xy: {number, number},
           grid_xy: {number, number},
           max_xy: {number, number}
         }) ::
-          {:error, <<_::160, _::_*32>>}
+          {:error, binary()}
           | {:ok, {number, number},
              %{
                grid_xy: {number, number},
@@ -17,7 +19,6 @@ defmodule LayoutOMatic.Button do
                primitive: %{data: number, styles: map},
                starting_xy: {number, number}
              }}
-
   def translate(
         %{
           component: component,
@@ -95,7 +96,7 @@ defmodule LayoutOMatic.Button do
   defp button_size(_), do: Map.new(button_font_size: @default_font_size)
 
   defp get_font_metrics(text, font_size) do
-    fm = Scenic.Cache.Static.FontMetrics.get!(@default_font)
+    {:ok, {Static.Font, fm}} = Static.meta(@default_font)
     ascent = FontMetrics.ascent(font_size, fm)
     fm_width = FontMetrics.width(text, font_size, fm)
 

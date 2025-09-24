@@ -1,20 +1,19 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+import Config
 
 # Configure the main viewport for the Scenic application
-config :scenic_layout_o_matic, :viewport, %{
+config :scenic_layout_o_matic, :viewport,
   name: :main_viewport,
   size: {800, 700},
-  default_scene: {LayoutOMatic.Scene.Home, nil},
+  default_scene: LayoutOMatic.Scene.Home,
   drivers: [
-    %{
+    [
       module: Scenic.Driver.Glfw,
       name: :glfw,
       opts: [resizeable: true, title: "layout_o_matic"]
-    }
+    ]
   ]
-}
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
