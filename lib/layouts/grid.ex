@@ -1,9 +1,7 @@
 defmodule LayoutOMatic.Grid do
   import Scenic.Primitives
 
-  alias Scenic.Graph
-
-  @updatable_opts [:translate, :stroke, :hidden]
+  # @updatable_opts [:translate, :stroke, :hidden]
   @moduledoc """
   Add a grid to a viewport.
 
@@ -85,7 +83,9 @@ defmodule LayoutOMatic.Grid do
   end
   ```
   """
-  @spec simple({number, number}, {number, number}, [any]) :: [{number, number}]
+  @spec simple({number, number}, {number, number}, [atom | String.t()]) :: [
+          Scenic.Primitive.Group.t()
+        ]
   def simple({starting_x, starting_y} = starting_xy, {max_x, max_y}, grid_ids, opts \\ []) do
     top_bottom_size = {max_x, max_y / 2}
     top = {top_bottom_size, starting_xy}
@@ -120,9 +120,10 @@ defmodule LayoutOMatic.Grid do
   Grid.percentage({0, 0}, {700, 600}, [25, 50, 25], [:left, :center, :right], [draw: true])
   ```
   """
-  @spec percentage({number, number}, {number, number}, [any], [atom]) :: [
-          Scenic.Primitives.Group.t()
-        ]
+  @spec percentage({number, number}, {number, number}, [number], [atom | String.t()], [any()]) ::
+          [
+            Scenic.Primitive.Group.t()
+          ]
   def percentage(
         {starting_x, _} = starting_xy,
         {max_x, _} = max_xy,
@@ -156,7 +157,7 @@ defmodule LayoutOMatic.Grid do
   ```
   """
 
-  @spec pixel({number, number}, {number, number}, [number], [atom], []) :: [
+  @spec pixel({number, number}, {number, number}, [number], [atom | String.t()], []) :: [
           Scenic.Primitives.Group.t()
         ]
   def pixel(starting_xy, max_xy, [] = sizes, [] = grid_ids, opts \\ [])
@@ -181,7 +182,7 @@ defmodule LayoutOMatic.Grid do
   ```
   """
 
-  @spec equal({number, number}, {number, number}, number, [atom], []) :: [
+  @spec equal({number, number}, {number, number}, number, [atom | String.t()], []) :: [
           Scenic.Primitives.Group.t()
         ]
   def equal(starting_xy, {max_x, _} = max_xy, number_of_portions, grid_ids, opts \\ [])
@@ -315,7 +316,7 @@ defmodule LayoutOMatic.Grid do
         id: id,
         hidden: !draw
       ),
-      id: String.to_atom(Atom.to_string(id) <> "_group"),
+      id: group_id(id),
       t: translate
     )
   end
@@ -329,8 +330,11 @@ defmodule LayoutOMatic.Grid do
         id: id,
         hidden: !draw
       ),
-      id: String.to_atom(Atom.to_string(id) <> "_group"),
+      id: group_id(id),
       t: {elem(starting_xy, 0), elem(starting_xy, 1)}
     )
   end
+
+  defp group_id(id) when is_atom(id), do: String.to_atom(Atom.to_string(id) <> "_group")
+  defp group_id(id) when is_binary(id), do: id <> "_group"
 end

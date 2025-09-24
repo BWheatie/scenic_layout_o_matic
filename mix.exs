@@ -28,8 +28,11 @@ defmodule LayoutOMatic.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:scenic, "~> 0.10.0"},
-      {:font_metrics, "~> 0.3"}
+      {:scenic, git: "https://github.com/ScenicFramework/scenic", tag: "v0.12.0-rc.0"},
+      # {:scenic_driver_local,
+      #  git: "https://github.com/ScenicFramework/scenic_driver_local", tag: "v0.12.0-rc.0"},
+      {:font_metrics, "~> 0.5"},
+      {:truetype_metrics, "~> 0.6"}
     ]
   end
 

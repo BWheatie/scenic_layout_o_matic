@@ -1,0 +1,26 @@
+New Layout paradigm
+
+Set screen layout and apply primitives to to established layout
+* ?? how can you define a layout without primitives??
+    * It can continue to be used the same way but using new opts
+* Flex.layout(graph, group_id, starting_point)
+    * Need to figure out what the bounding box is:
+        * order based? First id is the bounding box
+        
+    * Map.get(graph, group_id)
+    * ids
+
+Layout without primitive ids
+
+Rewrite group layout: pass in group, Get group primitives from graph. 
+* how to define which primitive is bounding box
+* opts:
+    * max container
+    * reflow
+    * align
+    * resize to fit
+    * layout direction(x, y, left, right, up, down)
+    * justify
+    * padding
+    * padding direction
+    
